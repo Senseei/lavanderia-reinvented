@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+    <div class="user-info">
+        <p>Here are your recents purchases.</p>
+        <a href="/">Home</a>
+    </div>
+    <div class="container">
+        <table>
+            <thead>
+                <td>Id da transação</td>
+                <td>Unidade</td>
+                <td>Numero da maquina</td>
+                <td>Maquina</td>
+                <td>Valor pago</td>
+                <td>Tempo</td>
+            </thead>
+        {% for purchase in purchases %}
+            <tbody>
+                <tr>
+                    <td>{{ purchase["id"] }}</td>
+                    <td>{{ purchase["local"] }}</td>
+                    <td>{{ purchase["machine_id"] }}</td>
+                    <td>{{ purchase["type"] }}</td>
+                    <td>{{ purchase["price"] }}</td>
+                    <td>{{ (purchase["time"] / 60)|int }} min</td>
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

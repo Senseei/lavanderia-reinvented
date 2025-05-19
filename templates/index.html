@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <div class="user-info">
+        <p>Hello, {{ session["name"] }}!</p>
+        <ul>
+            <li>
+                <a href="/cart">Cart</a>
+            </li>
+            <li style="border-right: none;">
+                <a href="/logout">Log Out</a>
+            </li>
+        </ul>
+    </div>
+    {% for row in locations %}
+        <div class="local-container">
+            <img src="/static/location.png">
+            <div>
+                <form action="/local" method="post">
+                    <input name="id" type="hidden" value="{{ row["id"] }}">
+                    <input type="submit" value="{{ row["local"] }}">
+                </form>
+                <!-- <p>{{ row["uf"] }} - {{ row["district"] }}</p>
+                <p>{{ row["address"] }} - {{ row["number"] }}</p>
+                -->
+                <p>São Paulo</p>
+                <p>Av. XXX - 1000</p>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

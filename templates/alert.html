@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block optionalhead %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            alert("{{ message }}");
+            window.location.assign("{{ path }}");
+        });
+    </script>
+
+{% endblock %}
