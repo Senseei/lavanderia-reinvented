@@ -3,11 +3,11 @@ from application.user.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from application.user.user_repository import UserRepository
 
 
-class CheckUserCredentials:
+class AuthService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def execute(self, username, password) -> AuthenticatedUserDTO:
+    def login(self, username, password) -> AuthenticatedUserDTO:
         user = self.user_repository.find_by_username_and_password(username, password)
         if not user:
             raise EntityNotFoundError("Invalid username or password")
