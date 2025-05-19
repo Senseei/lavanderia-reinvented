@@ -15,7 +15,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def findById(self, entity_id: int) -> DomainEntity:
+    def find_by_id(self, entity_id: int) -> DomainEntity:
         """
         Find a domain entity by its ID.
         :param entity_id: The ID of the domain entity to find.
@@ -24,7 +24,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def findAll(self):
+    def find_all(self):
         """
         Find all domain entities in the repository.
         :return: A list of all domain entities.
@@ -40,7 +40,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def deleteById(self, entity_id: int):
+    def delete_by_id(self, entity_id: int):
         """
         Delete a domain entity by its ID.
         :param entity_id: The ID of the domain entity to delete.
