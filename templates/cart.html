@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+    <div class="user-info">
+        {% if not session["cart"] %}
+            <p>Looks like your cart is empty..</p>
+        {% else %}
+            <p>Here is your cart :)</p>
+        {% endif %}
+        <a href="/">Home</a>
+    </div>
+    {% for product in session["cart"] %}
+        <div class="container">
+            <div class="product-container">
+                <img style="margin-right: 25px" src="/static/machine.png" alt="{{ product["type"] }}">
+                <div>
+                    <h4 style="margin-bottom: 5px">{{ product["type"] }} {{ product["machine_id"] }}</h4>
+                    {% if product["type"] == "Lavadora" %}
+                        <p>Serviço de Lavar</p>
+                    {% else %}
+                        <p>Serviço de Secar</p>
+                    {% endif %}
+                    <p>Tempo de {{ (product["time"] / 60)|int }} min</p>
+                </div>
+            </div>
+            <div class="footer">
+                <div id="trash">
+                    <img style="margin-right: 8px" src="/static/trash.png">
+                    <form action="/rmvfromcart" method="post">
+                        <input name="machine_id" type="hidden" value="{{ product["machine_id"] }}">
+                        <input name="cycle_id" type="hidden" value="{{ product["cycle_id"] }}">
+                        <input type="submit" value="Excluir item">
+                    </form>
+                </div>
+                <p style="font-weight: bold">{{ product["fprice"] }}</p>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if session["cart"] %}
+        <form action="/payment" method="get">
+            <div class=container>
+                <h3 class="row">Resumo</h3>
+                <div class="row">
+                    <p>Produtos</p>
+                    <p>{{ total }}</p>
+                </div>
+                <div class="row" style="font-weight: bold">
+                    <p>Total</p>
+                    <p>{{ total }}</p>
+                </div>
+            </div>
+            <div>
+                <input class="button button2" type="submit" value="Continuar">
+            </div>
+        </form>
+    {% endif %}
+
+{% endblock %}

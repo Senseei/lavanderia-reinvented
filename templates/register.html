@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+    <div>
+        <div class="login-title-container">
+            <h1>Thank you for using our services! Please, fill the blanks to complete your account.</h1>
+        </div>
+        <form class="register-form" action="/register" method="post">
+            <div>
+                <input type="text" placeholder="Your name:" autocomplete="off" autofocus name="name">
+            </div>
+            <div>
+                <input type="text" placeholder="Username:" autocomplete="off" autofocus name="username">
+            </div>
+            <div>
+                <input type="password" placeholder="Password:" name="password">
+            </div>
+            <div>
+                <input class="button button4" type="submit" name="register" value="Create account">
+                <a href="/login">Log In</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

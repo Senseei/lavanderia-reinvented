@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block optionalhead %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const texts = document.getElementById("form").querySelectorAll('input');
+            for (const text of texts) {
+                text.onkeyup = (e) => {
+                    const card = document.getElementById("card").querySelectorAll("h3");
+                    if (e.target.id == "2")
+                    {
+                        e.target.value = format_data(e.target.value);
+                        card.item(e.target.id).innerHTML = `DV: ${e.target.value}`;
+                        document.getElementById("validade").value = "01/" + e.target.value;
+                    }
+                    else if (e.target.id == "3")
+                    {
+                        e.target.value = keyPress_OnlyNumbers(e.target.value);
+                        card.item(e.target.id).innerHTML = `CV: ${e.target.value}`;
+                    }
+                    else if (e.target.id == "1")
+                    {
+                        e.target.value = format_cardnumber(e.target.value);
+                        card.item(e.target.id).innerHTML = e.target.value;
+
+                        var flag = checkCard(e.target.value);
+
+                        if (flag == "MASTERCARD")
+                        {
+                            document.getElementById("flag").src = "/static/mastercard.png";
+                            document.getElementById("flag-form").value = "MASTERCARD";
+                        }
+                        else if (flag == "VISA")
+                        {
+                            document.getElementById("flag").src = "/static/visa.png";
+                            document.getElementById("flag-form").value = "VISA";
+                        }
+                        else if (flag == "AMEX")
+                        {
+                            document.getElementById("flag").src = "/static/amex.png";
+                            document.getElementById("flag-form").value = "AMEX";
+                        }
+                        else
+                        {
+                            document.getElementById("flag").src = " ";
+                            document.getElementById("flag-form").value = "UNKNOWN";
+                        }
+                    }
+                    else
+                    {
+                        card.item(e.target.id).innerHTML = e.target.value;
+                    }
+
+
+                    if (e.target.value == "")
+                    {
+                        card.item(e.target.id).innerHTML = "--";
+                    }
+                };
+            }
+        });
+    </script>
+
+{% endblock %}
+
+{% block main %}
+
+    <div class="user-info">
+        <div>
+            <p>Put the data of your card</p>
+        </div>
+        <div>
+            <a href="/mycards">Return</a>
+        </div>
+    </div>
+    <form id="form" style="padding-top: 15px" action="/addpayment" method="post">
+        <div class="container add-payment-form">
+            <div id="card" class="card">
+                <div class="card-row">
+                    <h3 id="0">--</h3>
+                </div>
+                <div class="card-row">
+                    <h3 id="1">--</h3>
+                    <img id="flag" src="" alt="" style="width: 70px; margin: 0px 0px">
+                    <input id="flag-form" name="flag" type="hidden" value="">
+                </div>
+                <div class="card-row">
+                    <h3 id="2">DV: --</h3>
+                    <h3 id="3">CV: --</h3>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input id="0" type="text" name="titular" placeholder="Titular: " autofocus>
+                </div>
+                <div>
+                    <input id="1" type="text" name="cardnumber" placeholder="Card number: " maxlength=19>
+                </div>
+                <div>
+                    <input id="2" type="text" placeholder="DV: " style="width: 50px" maxlength=5>
+                    <input id="validade" name="validade" type="hidden" value="">
+                    <input id="3" type="text" name="cvv" placeholder="CV: " style="width: 45px" maxlength=3>
+                    <input id="4" name="method" type="radio" value="CREDIT" checked>
+                    <label for="4">Crédito</label>
+                    <input id="5" name="method" type="radio" value="DEBIT">
+                    <label for="5">Débito</label>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input class="button button-blue-animated" type="submit" value="Adicionar cartão">
+        </div>
+    </form>
+
+{% endblock %}

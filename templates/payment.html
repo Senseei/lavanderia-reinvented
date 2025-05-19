@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block optionalhead %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const radios = document.getElementById("options").querySelectorAll('input');
+            for (const radio of radios) {
+                radio.onclick = (e) => {
+                    const input = document.querySelector("#payment_method");
+                    input.value = e.target.id;
+                };
+            }
+        });
+    </script>
+
+{% endblock %}
+
+{% block main %}
+
+    <div class="user-info">
+        <p>Revision</p>
+        <a href="/cart">Return</a>
+    </div>
+    <form action="/payment" method="post">
+        <div class=container>
+            <h3 class="row">Resumo</h3>
+            <div class="row">
+                <p>Produtos</p>
+                <input name="total-products" type="hidden" value="{{ total }}">
+                <p>{{ payment_info["products"] }}</p>
+            </div>
+            <div class="row">
+                <p>Descontos</p>
+                <input name="discounts" type="hidden" value="0">
+                <p>{{ payment_info["discounts"] }}</p>
+            </div>
+            <div class="footer" style="font-weight: bold;">
+                <p>Total</p>
+                <input name="total" type="hidden" value="{{ total }}">
+                <p>{{ payment_info["total"] }}</p>
+            </div>
+            <div class="row" style="border-top: 1px solid #DDD; padding: 15px 0px">
+                <p>Cupom de desconto</p>
+                <a>Adicionar</a>
+            </div>
+        </div>
+        <div class="container">
+            <h3 class="row">Itens do pedido</h3>
+            {% for product in session["cart"] %}
+                <div class="product-container" style="font-size: 15px">
+                    <img style="margin-right: 25px" src="/static/machine.png" alt="{{ product["type"] }}">
+                    <div style="padding-bottom: 15px">
+                        <h4 style="margin-bottom: 5px">{{ product["type"] }} {{ product["machine_id"] }}</h4>
+                        {% if product["type"] == "Lavadora" %}
+                            <p>Serviço de Lavar</p>
+                        {% else %}
+                            <p>Serviço de Secar</p>
+                        {% endif %}
+                        <p>Tempo de {{ (product["time"] / 60)|int }} min</p>
+                        <p>{{ product["fprice"] }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="container">
+            <div class="row">
+                <h3>Forma de pagamento</h3>
+                <a href="/mycards"><img width="25px" src="/static/pencil.png" alt="edit" style="cursor: pointer"></a>
+            </div>
+            <div id="options" class="payment-method">
+                <div class="row" style="border-bottom: none">
+                    <input name="payment_method" id="payment_method" type="hidden" value="0">
+                    <input id="0" name="payments" type="radio" value="Carteira" checked>
+                    <label for="0"> Sua Carteira</label>
+                    <h3>- Seu saldo: {{ session["cash"] }}</h3>
+                </div>
+            {% for method in payment_info["cards"] %}
+                <input id="{{ method["id"] }}" name="payments" type="radio" value="{{ method["cardnumber"] }}">
+                <label for="{{ method["id"] }}">{{ method["flag"] }} - {{ method["final"] }} ({{ method["method"] }})</label>
+            {% endfor %}
+            </div>
+        </div>
+        <div>
+            <input style="display: block; margin-left: auto; margin-right: auto; margin-bottom: 20px;width: 250px" class="button button2" type="submit" value="Finalizar pedido">
+        </div>
+    </form>
+
+{% endblock %}

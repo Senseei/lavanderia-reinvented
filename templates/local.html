@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+    <style>
+        main h1
+        {
+            margin-left: 20px;
+            color: #555;
+            font-weight: 600;
+        }
+    </style>
+
+    <div class="user-info">
+        <p>Select the machine you want to use.</p>
+        <a href="/">Home</a>
+    </div>
+    <h1>Lavagem</h1>
+    {% for washer in washers %}
+        <div class="machine-container">
+            <img src="/static/machine.png" alt="Lavadora">
+            <div>
+                <form action="/details" method="post">
+                    <input name="locked" type="hidden" value="{{ washer["locked"] }}">
+                    <input name="id" type="hidden" value="{{ washer["id"] }}">
+                    <input type="submit" value="Lavadora {{ washer["id"] }}">
+                </form>
+                <p>Suas roupas merecem um tratamento especial, afinal de contas elas te acompanham todos os dias e precisam estar sempre confortáveis.</p>
+                {% if washer["locked"] == 0 %}
+                    <p id="status" style="color: green">Disponível</p>
+                {% else %}
+                    <p id="status" style="color: orange">Ocupada</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    <h1>Secagem</h1>
+    {% for dryer in dryers %}
+        <div class="machine-container">
+            <img src="/static/machine.png" alt="Secadora">
+            <div>
+                <form action="/details" method="post">
+                    <input name="locked" type="hidden" value="{{ dryer["locked"] }}">
+                    <input name="id" type="hidden" value="{{ dryer["id"] }}">
+                    <input type="submit" value="Secadora {{ dryer["id"] }}">
+                </form>
+                <p>Suas roupas merecem um tratamento especial, afinal de contas elas te acompanham todos os dias e precisam estar sempre confortáveis.</p>
+                {% if dryer["locked"] == 0 %}
+                    <p id="status" style="color: green">Disponível</p>
+                {% else %}
+                    <p id="status" style="color: orange">Ocupada</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

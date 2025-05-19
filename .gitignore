@@ -1,0 +1,56 @@
+# Bytecode do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente virtual
+venv/
+env/
+.venv/
+.env/
+
+# Configurações do editor/IDE
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+.idea/
+.vscode/
+
+# Arquivos de log
+*.log
+
+# Arquivos de banco de dados locais
+*.sqlite3
+*.db
+
+# Arquivos de configuração de ambiente
+.env
+.env.*
+
+# Dependências
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Arquivos de cache do pip
+pip-wheel-metadata/
+pip-log.txt
+
+# Arquivos de testes
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+
+# Arquivos de front-end
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Outros
+.DS_Store
+Thumbs.db
+flask_session
