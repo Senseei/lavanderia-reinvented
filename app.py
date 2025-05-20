@@ -11,6 +11,7 @@ Session(app)
 db = SQL("sqlite:///database.db")
 locations = db.execute("SELECT * FROM units")
 
+# Refactored
 @app.route("/")
 def index():
     if not session.get("user_id"):
@@ -130,6 +131,7 @@ def local():
     return render_template("local.html", washers=washers, dryers=dryers)
 
 
+# Refactored
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -154,6 +156,7 @@ def login():
     return render_template("login.html")
 
 
+# Refactored
 @app.route("/logout")
 def logout():
     session.clear()
@@ -237,6 +240,7 @@ def mycards():
     return render_template("payments.html", cards=cards)
 
 
+# Refactored
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
