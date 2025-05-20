@@ -1,4 +1,4 @@
-from application.user.user_repository import UserRepository
+from application.user.interfaces.user_repository import UserRepository
 from domain.user import User
 
 
