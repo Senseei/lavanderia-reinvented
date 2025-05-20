@@ -1,5 +1,5 @@
 from application.errors.entity_not_found_error import EntityNotFoundError
-from application.user.dtos.authenticated_user_dto import AuthenticatedUserDTO
+from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from application.user.user_repository import UserRepository
 
 

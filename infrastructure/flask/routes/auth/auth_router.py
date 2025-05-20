@@ -1,7 +1,7 @@
 from flask import Blueprint, request, session, redirect, render_template
 
 from adapters.user.auth_controller import AuthControllerAdapter
-from application.user.use_cases.auth_service import AuthService
+from application.auth.use_cases.auth_service import AuthService
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 from infrastructure.flask.routes.base_router import BaseRouter
 
