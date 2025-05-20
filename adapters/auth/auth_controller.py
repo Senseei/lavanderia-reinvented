@@ -1,4 +1,5 @@
 from adapters.auth.dtos.login_credentials_dto import LoginCredentialsDTO
+from adapters.dtos.request_dto import RequestDTO
 from adapters.dtos.response_dto import ResponseDTO
 from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from application.auth.dtos.new_user_dto import NewUserDTO
@@ -12,8 +13,8 @@ class AuthControllerAdapter:
     def __init__(self, auth_service: AuthService):
         self._auth_service = auth_service
 
-    def login(self, credentials_dict) -> ResponseDTO[AuthenticatedUserDTO]:
-        credentials = LoginCredentialsDTO.from_dict(credentials_dict)
+    def login(self, request: RequestDTO) -> ResponseDTO[AuthenticatedUserDTO]:
+        credentials = LoginCredentialsDTO.from_dict(request.body)
 
         if not credentials:
             return ResponseDTO(success=False, message="Invalid credentials")
@@ -24,8 +25,8 @@ class AuthControllerAdapter:
         except EntityNotFoundError as e:
             return ResponseDTO.error_response(str(e))
 
-    def register(self, user_dict) -> ResponseDTO[UserDTO]:
-        dto = NewUserDTO.from_dict(user_dict)
+    def register(self, request: RequestDTO) -> ResponseDTO[UserDTO]:
+        dto = NewUserDTO.from_dict(request.body)
 
         if not dto:
             return ResponseDTO(success=False, message="There are missing fields! Please, fill each one of them.")
