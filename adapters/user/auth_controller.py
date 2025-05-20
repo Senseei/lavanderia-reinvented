@@ -1,7 +1,7 @@
 from adapters.user.dtos.login_credentials_dto import LoginCredentialsDTO
 from adapters.user.dtos.login_response_dto import LoginResponseDTO
 from application.errors.entity_not_found_error import EntityNotFoundError
-from application.user.use_cases.auth_service import AuthService
+from application.auth.use_cases.auth_service import AuthService
 
 
 class AuthControllerAdapter:

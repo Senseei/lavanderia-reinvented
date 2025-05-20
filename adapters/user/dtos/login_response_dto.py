@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-from application.user.dtos.authenticated_user_dto import AuthenticatedUserDTO
+from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 
 
 @dataclass
