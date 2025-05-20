@@ -3,7 +3,9 @@ from flask import Flask, request, redirect, render_template, session, jsonify
 from flask_session import Session
 from infrastructure.flask.routes.index_router import IndexRouter
 
-app = Flask(__name__)
+app = Flask(__name__,
+            template_folder='infrastructure/flask/templates',
+            static_folder='infrastructure/flask/static')
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
