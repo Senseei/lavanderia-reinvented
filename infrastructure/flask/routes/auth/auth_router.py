@@ -17,7 +17,7 @@ class AuthRouter(BaseRouter):
                 response = self._auth_controller.login(request.form)
                 if not response.success:
                     return render_template("alert.html", message=response.message, path="/login")
-                session["user"] = response.user
+                session["user"] = response.data
                 return redirect("/")
 
             return render_template("login.html")
