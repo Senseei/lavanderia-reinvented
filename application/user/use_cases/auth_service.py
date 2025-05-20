@@ -5,10 +5,10 @@ from application.user.user_repository import UserRepository
 
 class AuthService:
     def __init__(self, user_repository: UserRepository):
-        self.user_repository = user_repository
+        self._user_repository = user_repository
 
     def login(self, username, password) -> AuthenticatedUserDTO:
-        user = self.user_repository.find_by_username_and_password(username, password)
+        user = self._user_repository.find_by_username_and_password(username, password)
         if not user:
             raise EntityNotFoundError("Invalid username or password")
         return AuthenticatedUserDTO(user)
