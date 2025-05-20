@@ -22,6 +22,11 @@ class AuthRouter(BaseRouter):
 
             return render_template("login.html")
 
+        @self.blueprint.route("/logout")
+        def logout():
+            session.clear()
+            return redirect("/")
+
     @classmethod
     def resolve_dependencies(cls):
         repository = UserRepositoryImpl()
