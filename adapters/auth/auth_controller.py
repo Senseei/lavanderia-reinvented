@@ -3,9 +3,9 @@ from adapters.dtos.request_dto import RequestDTO
 from adapters.dtos.response_dto import ResponseDTO
 from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from application.auth.dtos.new_user_dto import NewUserDTO
+from application.errors.invalid_credentials_error import InvalidCredentialsError
 from application.user.dtos.user_dto import UserDTO
 from application.errors.duplicate_entity_error import DuplicateEntityError
-from application.errors.entity_not_found_error import EntityNotFoundError
 from application.auth.usecases.auth_service import AuthService
 
 
@@ -22,7 +22,7 @@ class AuthControllerAdapter:
         try:
             user = self._auth_service.login(credentials.username, credentials.password)
             return ResponseDTO.success_response(user)
-        except EntityNotFoundError as e:
+        except InvalidCredentialsError as e:
             return ResponseDTO.error_response(str(e))
 
     def register(self, request: RequestDTO) -> ResponseDTO[UserDTO]:
