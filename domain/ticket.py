@@ -1,4 +1,4 @@
-from domain_entity import DomainEntity
+from domain.domain_entity import DomainEntity
 
 class Ticket(DomainEntity):
     def __init__(self, id: int, discount: float, code: str):
