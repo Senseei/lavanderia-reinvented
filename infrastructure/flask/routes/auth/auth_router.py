@@ -4,39 +4,36 @@ from adapters.auth.auth_controller import AuthControllerAdapter
 from adapters.dtos.request_dto import RequestDTO
 from application.auth.usecases.auth_service import AuthService
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
+from infrastructure.flask.routes.auth.routes_constants import AuthRoutes
 from infrastructure.flask.routes.base_router import BaseRouter
+from infrastructure.flask.routes.route_constants import IndexRoutes
 
 
 class AuthRouter(BaseRouter):
     _auth_controller: AuthControllerAdapter
 
     def __init__(self):
-        super().__init__(Blueprint("auth", __name__, url_prefix="/auth"))
+        super().__init__(Blueprint("auth", __name__, url_prefix=AuthRoutes.BASE_URL))
         self.resolve_dependencies()
 
-        @self.blueprint.route("/login", methods=["GET", "POST"])
+        @self.blueprint.route(AuthRoutes.LOGIN_PATH, methods=["GET", "POST"])
         def login():
             if request.method == "POST":
                 response = self._auth_controller.login(RequestDTO(request.form))
                 if not response.success:
-                    return render_template("alert.html", message=response.message, path="/login")
+                    return render_template("alert.html", message=response.message, path=AuthRoutes.LOGIN_FULL_PATH)
                 session["user"] = response.data
-                return redirect("/")
+                return redirect(IndexRoutes.BASE_URL)
 
             return render_template("login.html")
 
-        @self.blueprint.route("/logout")
-        def logout():
-            session.clear()
-            return redirect("/")
-
-        @self.blueprint.route("/register", methods=["GET", "POST"])
+        @self.blueprint.route(AuthRoutes.REGISTER_PATH, methods=["GET", "POST"])
         def register():
             if request.method == "POST":
                 response = self._auth_controller.register(RequestDTO(request.form))
                 if not response.success:
-                    return render_template("alert.html", message=response.message, path="/register")
-                return render_template("alert.html", message="Success! Now, log in to your new account to enjoy our features :)", path="/login")
+                    return render_template("alert.html", message=response.message, path=AuthRoutes.REGISTER_FULL_PATH)
+                return render_template("alert.html", message="Success! Now, log in to your new account to enjoy our features :)", path=AuthRoutes.LOGIN_FULL_PATH)
 
             return render_template("register.html")
 
