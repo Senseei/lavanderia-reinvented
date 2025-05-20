@@ -30,14 +30,14 @@
                     <input type="submit" value="Return">
                 </li>
                 <li style="border-right: none;">
-                    <a href="/">Home</a>
+                    <a href="/infrastructure/flask/static">Home</a>
                 </li>
             </ul>
         </form>
     </div>
     <form action="/cart" method="post">
         <div class="machine-details">
-            <img src="/static/machine.png" alt="{{ machine["type"] }}">
+            <img src="/infrastructure/flask/static/machine.png" alt="{{ machine["type"] }}">
             <h2 style="font-weight: 300">{{ machine["type"] }} {{ machine["id"] }}</h2>
             {% if machine["locked"] == 0 %}
                 <p id="status" style="color: green">Disponível</p>

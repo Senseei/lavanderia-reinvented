@@ -14,7 +14,7 @@
     </div>
     {% for row in locations %}
         <div class="local-container">
-            <img src="/static/location.png">
+            <img src="/infrastructure/flask/staticon.png">
             <div>
                 <form action="/local" method="post">
                     <input name="id" type="hidden" value="{{ row["id"] }}">

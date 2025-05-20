@@ -8,12 +8,12 @@
         {% else %}
             <p>Here is your cart :)</p>
         {% endif %}
-        <a href="/">Home</a>
+        <a href="/infrastructure/flask/static">Home</a>
     </div>
     {% for product in session["cart"] %}
         <div class="container">
             <div class="product-container">
-                <img style="margin-right: 25px" src="/static/machine.png" alt="{{ product["type"] }}">
+                <img style="margin-right: 25px" src="/infrastructure/flask/static/machine.png" alt="{{ product["type"] }}">
                 <div>
                     <h4 style="margin-bottom: 5px">{{ product["type"] }} {{ product["machine_id"] }}</h4>
                     {% if product["type"] == "Lavadora" %}
@@ -26,7 +26,7 @@
             </div>
             <div class="footer">
                 <div id="trash">
-                    <img style="margin-right: 8px" src="/static/trash.png">
+                    <img style="margin-right: 8px" src="/infrastructure/flask/staticpng">
                     <form action="/rmvfromcart" method="post">
                         <input name="machine_id" type="hidden" value="{{ product["machine_id"] }}">
                         <input name="cycle_id" type="hidden" value="{{ product["cycle_id"] }}">
