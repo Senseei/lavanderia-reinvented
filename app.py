@@ -20,6 +20,7 @@ def index():
     return render_template("index.html", locations=locations)
 
 
+# TODO
 @app.route("/addpayment", methods=["GET", "POST"])
 def addpayment():
     if not session["user_id"] or not session.get("user_id"):
@@ -46,6 +47,7 @@ def addpayment():
     return render_template("addpayment.html")
 
 
+# TODO
 @app.route("/cart", methods=["GET", "POST"])
 def cart():
     if not session.get("user_id"):
@@ -86,6 +88,7 @@ def cart():
     return render_template("cart.html", total=br(session["total_in_cart"]))
 
 
+# TODO
 @app.route("/details", methods=["GET", "POST"])
 def details():
     if not session.get("machine") and not request.form.get("id"):
@@ -117,6 +120,7 @@ def details():
     return render_template("details.html", machine=machine[0], prices=prices)
     
 
+# TODO
 @app.route("/local", methods=["GET", "POST"])
 def local():
     if not session.get("unit") and not request.form.get("id"):
@@ -163,6 +167,7 @@ def logout():
     return redirect("/")
 
 
+# TODO
 @app.route("/payment", methods=["GET", "POST"])
 def payment():
     if not session.get("user_id"):
@@ -218,6 +223,7 @@ def payment():
 
     return render_template("payment.html", payment_info=payment_info)
 
+# TODO
 @app.route("/mycards")
 def mycards():
     if not session["user_id"]:
@@ -264,6 +270,7 @@ def register():
     return render_template("register.html")
 
 
+# TODO
 @app.route("/rmvfromcart", methods=["GET", "POST"])
 def rmv():
     if not request.form.get("cycle_id") and not request.form.get("machine_id"):
