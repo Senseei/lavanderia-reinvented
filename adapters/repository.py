@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
+from typing import TypeVar, Generic
 
-from domain.domain_entity import DomainEntity
+T = TypeVar('T')
 
-
-class Repository(ABC):
+class Repository(ABC, Generic[T]):
 
     @abstractmethod
-    def save(self, entity: DomainEntity) -> DomainEntity:
+    def save(self, entity: T) -> T:
         """
         Save a domain entity to the repository.
         :param entity: The domain entity to save.
@@ -15,7 +15,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def find_by_id(self, entity_id: int) -> DomainEntity:
+    def find_by_id(self, entity_id: int) -> T:
         """
         Find a domain entity by its ID.
         :param entity_id: The ID of the domain entity to find.
@@ -24,7 +24,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def find_all(self):
+    def find_all(self) -> list[T]:
         """
         Find all domain entities in the repository.
         :return: A list of all domain entities.
@@ -32,7 +32,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def delete(self, entity: DomainEntity):
+    def delete(self, entity: T):
         """
         Delete a domain entity from the repository.
         :param entity: The domain entity to delete.
@@ -48,7 +48,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def update(self, entity: DomainEntity) -> DomainEntity:
+    def update(self, entity: T) -> T:
         """
         Update a domain entity in the repository.
         :param entity: The domain entity to update.
