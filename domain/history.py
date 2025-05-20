@@ -1,4 +1,4 @@
-from domain_entity import DomainEntity
+from domain.domain_entity import DomainEntity
 from user import User
 from machine import Machine
 from cycle import Cycle

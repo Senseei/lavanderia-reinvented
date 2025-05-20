@@ -1,4 +1,4 @@
-from domain_entity import DomainEntity
+from domain.domain_entity import DomainEntity
 from enums.machine_type import MachineType
 from unit import Unit
 
