@@ -1,5 +1,5 @@
-from adapters.user.dtos.login_credentials_dto import LoginCredentialsDTO
-from adapters.user.dtos.response_dto import ResponseDTO
+from adapters.auth.dtos.login_credentials_dto import LoginCredentialsDTO
+from adapters.dtos.response_dto import ResponseDTO
 from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from application.auth.dtos.new_user_dto import NewUserDTO
 from application.auth.dtos.user_dto import UserDTO
