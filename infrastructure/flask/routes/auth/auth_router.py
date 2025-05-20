@@ -8,6 +8,8 @@ from infrastructure.flask.routes.base_router import BaseRouter
 
 
 class AuthRouter(BaseRouter):
+    _auth_controller: AuthControllerAdapter
+
     def __init__(self):
         super().__init__(Blueprint("auth", __name__, url_prefix="/auth"))
         self.resolve_dependencies()
