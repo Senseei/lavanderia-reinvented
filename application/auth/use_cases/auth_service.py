@@ -1,5 +1,5 @@
 from application.auth.dtos.new_user_dto import NewUserDTO
-from application.auth.dtos.user_dto import UserDTO
+from application.user.dtos.user_dto import UserDTO
 from application.errors.duplicate_entity_error import DuplicateEntityError
 from application.errors.entity_not_found_error import EntityNotFoundError
 from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
