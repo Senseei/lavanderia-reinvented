@@ -10,7 +10,7 @@ from infrastructure.flask.routes.base_router import BaseRouter
 class AuthRouter(BaseRouter):
     def __init__(self):
         super().__init__(Blueprint("auth", __name__, url_prefix="/auth"))
-        self._auth_controller = self.resolve_dependencies()
+        self.resolve_dependencies()
 
         @self.blueprint.route("/login", methods=["GET", "POST"])
         def login():
@@ -38,8 +38,7 @@ class AuthRouter(BaseRouter):
 
             return render_template("register.html")
 
-    @classmethod
-    def resolve_dependencies(cls):
+    def resolve_dependencies(self):
         repository = UserRepositoryImpl()
         service = AuthService(repository)
-        return AuthControllerAdapter(service)
+        self._auth_controller = AuthControllerAdapter(service)
