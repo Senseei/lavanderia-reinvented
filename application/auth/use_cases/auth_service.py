@@ -3,7 +3,7 @@ from application.user.dtos.user_dto import UserDTO
 from application.errors.duplicate_entity_error import DuplicateEntityError
 from application.errors.entity_not_found_error import EntityNotFoundError
 from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
-from application.user.user_repository import UserRepository
+from application.user.interfaces.user_repository import UserRepository
 from domain.user import User
 
 
