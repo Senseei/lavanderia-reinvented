@@ -8,13 +8,13 @@
                 <a href="/cart">Cart</a>
             </li>
             <li style="border-right: none;">
-                <a href="/logout">Log Out</a>
+                <a href="{{ url_for('index.logout') }}">Log Out</a>
             </li>
         </ul>
     </div>
     {% for row in locations %}
         <div class="local-container">
-            <img src="/infrastructure/flask/staticon.png">
+            <img src="{{ url_for('static', 'location.png') }}">
             <div>
                 <form action="/local" method="post">
                     <input name="id" type="hidden" value="{{ row["id"] }}">
