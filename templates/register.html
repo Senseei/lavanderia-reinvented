@@ -6,7 +6,7 @@
         <div class="login-title-container">
             <h1>Thank you for using our services! Please, fill the blanks to complete your account.</h1>
         </div>
-        <form class="register-form" action="/register" method="post">
+        <form class="register-form" action="{{ url_for('index.auth.register') }}" method="post">
             <div>
                 <input type="text" placeholder="Your name:" autocomplete="off" autofocus name="name">
             </div>
@@ -18,7 +18,7 @@
             </div>
             <div>
                 <input class="button button4" type="submit" name="register" value="Create account">
-                <a href="/login">Log In</a>
+                <a href="{{ url_for('index.auth.login') }}">Log In</a>
             </div>
         </form>
     </div>

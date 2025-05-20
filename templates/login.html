@@ -6,7 +6,7 @@
         <div class="login-title-container">
             <h1>Hello, there! Please, insert your user and password.</h1>
         </div>
-        <form class="login-form" action="/login" method="post">
+        <form class="login-form" action="{{ url_for('index.auth.login') }}" method="post">
             <div>
                 <input type="text" placeholder="Username:" autocomplete="off" autofocus name="username">
             </div>
@@ -15,7 +15,7 @@
             </div>
             <div>
                 <input class="button button4" type="submit" name="login" value="Log In">
-                <a href="/register" class="button button4">Register</a>
+                <a href="/auth/register" class="button button4">Register</a>
             </div>
         </form>
     </div>
