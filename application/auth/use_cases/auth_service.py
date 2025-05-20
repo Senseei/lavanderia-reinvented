@@ -1,6 +1,10 @@
+from application.auth.dtos.new_user_dto import NewUserDTO
+from application.auth.dtos.user_dto import UserDTO
+from application.errors.duplicate_entity_error import DuplicateEntityError
 from application.errors.entity_not_found_error import EntityNotFoundError
 from application.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from application.user.user_repository import UserRepository
+from domain.user import User
 
 
 class AuthService:
@@ -12,3 +16,10 @@ class AuthService:
         if not user:
             raise EntityNotFoundError("Invalid username or password")
         return AuthenticatedUserDTO(user)
+
+    def register(self, dto: NewUserDTO) -> UserDTO:
+        if self._user_repository.find_by_username(dto.username):
+            raise DuplicateEntityError("A user with the given username already exists")
+
+        new_user = User(dto.username, dto.name, dto.password)
+        return UserDTO(self._user_repository.save(new_user))
