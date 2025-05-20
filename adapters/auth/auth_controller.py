@@ -6,7 +6,7 @@ from application.auth.dtos.new_user_dto import NewUserDTO
 from application.user.dtos.user_dto import UserDTO
 from application.errors.duplicate_entity_error import DuplicateEntityError
 from application.errors.entity_not_found_error import EntityNotFoundError
-from application.auth.use_cases.auth_service import AuthService
+from application.auth.usecases.auth_service import AuthService
 
 
 class AuthControllerAdapter:
