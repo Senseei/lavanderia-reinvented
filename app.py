@@ -1,6 +1,7 @@
 from cs50 import SQL
 from flask import Flask, request, redirect, render_template, session, jsonify
 from flask_session import Session
+from infrastructure.flask.routes.index_router import IndexRouter
 
 app = Flask(__name__)
 
@@ -11,14 +12,7 @@ Session(app)
 db = SQL("sqlite:///database.db")
 locations = db.execute("SELECT * FROM units")
 
-# Refactored
-@app.route("/")
-def index():
-    if not session.get("user_id"):
-        return redirect("/login")
-
-    return render_template("index.html", locations=locations)
-
+app.register_blueprint(IndexRouter().blueprint)
 
 # TODO
 @app.route("/addpayment", methods=["GET", "POST"])
@@ -134,39 +128,6 @@ def local():
 
     return render_template("local.html", washers=washers, dryers=dryers)
 
-
-# Refactored
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        if not request.form.get("username"):
-            return render_template("alert.html", message="Missing username!", path="/login")
-        elif not request.form.get("password"):
-            return render_template("alert.html", message="Missing password!", path="/login")
-
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        rows = db.execute("SELECT * FROM users WHERE username = ? AND password = ?", username, password)
-
-        if len(rows) != 1:
-            return render_template("alert.html", message="Invalid password or username!", path="/login")
-
-        session["user_id"] = rows[0]["id"]
-        session["name"] = rows[0]["name"]
-        session["cash"] = br(rows[0]["cash"])
-
-        return redirect("/")
-    return render_template("login.html")
-
-
-# Refactored
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/")
-
-
 # TODO
 @app.route("/payment", methods=["GET", "POST"])
 def payment():
@@ -245,31 +206,6 @@ def mycards():
 
     return render_template("payments.html", cards=cards)
 
-
-# Refactored
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        if not request.form.get("name"):
-            return render_template("alert.html", message="Please, tell us your name.", path="/register")
-        if not request.form.get("username"):
-            return render_template("alert.html", message="Username cannot be empty!", path="/register")
-        username = request.form.get("username").strip()
-        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
-        if len(rows) > 0:
-            return render_template("alert.html", message="This username is already in use.", path="/register")
-        if not request.form.get("password"):
-            return render_template("alert.html", message="Select a good password to protect your account!", path="/register")
-
-        name = request.form.get("name").strip()
-        password = request.form.get("password").strip()
-
-        db.execute("INSERT INTO users (username, name, password) VALUES (?, ?, ?)", username, name, password)
-
-        return render_template("alert.html", message="Success! Now, log in to your new account to enjoy our features :)", path="/login")
-    return render_template("register.html")
-
-
 # TODO
 @app.route("/rmvfromcart", methods=["GET", "POST"])
 def rmv():
@@ -286,6 +222,7 @@ def rmv():
     return redirect("/cart")
 
 
+# TODO
 @app.route("/rmvcard", methods=["GET", "POST"])
 def rmvcard():
     if not session["user_id"]:
