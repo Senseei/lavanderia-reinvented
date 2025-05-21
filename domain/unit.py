@@ -2,6 +2,6 @@ from domain.domain_entity import DomainEntity
 
 
 class Unit(DomainEntity):
-    def __init__(self, id: int, name: str):
+    def __init__(self, id: int, local: str):
         super().__init__(id)
-        self.name = name
+        self.local = local
