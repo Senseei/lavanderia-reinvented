@@ -14,11 +14,11 @@
     </div>
     {% for row in locations %}
         <div class="local-container">
-            <img src="{{ url_for('static', 'location.png') }}">
+            <img src="{{ url_for('static', filename='location.png') }}">
             <div>
                 <form action="/local" method="post">
-                    <input name="id" type="hidden" value="{{ row["id"] }}">
-                    <input type="submit" value="{{ row["local"] }}">
+                    <input name="id" type="hidden" value="{{ row['id'] }}">
+                    <input type="submit" value="{{ row['local'] }}">
                 </form>
                 <!-- <p>{{ row["uf"] }} - {{ row["district"] }}</p>
                 <p>{{ row["address"] }} - {{ row["number"] }}</p>
