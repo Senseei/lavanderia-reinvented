@@ -4,41 +4,42 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const texts = document.getElementById("form").querySelectorAll('input');
+            const texts = document.getElementById("form").querySelectorAll('input[type="text"]');
             for (const text of texts) {
                 text.onkeyup = (e) => {
                     const card = document.getElementById("card").querySelectorAll("h3");
-                    if (e.target.id == "2")
+
+                    if (e.target.id === "input-dv")
                     {
                         e.target.value = format_data(e.target.value);
-                        card.item(e.target.id).innerHTML = `DV: ${e.target.value}`;
+                        document.getElementById("card-dv").innerHTML = `DV: ${e.target.value}`;
                         document.getElementById("validade").value = "01/" + e.target.value;
                     }
-                    else if (e.target.id == "3")
+                    else if (e.target.id === "input-cv")
                     {
                         e.target.value = keyPress_OnlyNumbers(e.target.value);
-                        card.item(e.target.id).innerHTML = `CV: ${e.target.value}`;
+                        document.getElementById("card-cv").innerHTML = `CV: ${e.target.value}`;
                     }
-                    else if (e.target.id == "1")
+                    else if (e.target.id === "input-number")
                     {
                         e.target.value = format_cardnumber(e.target.value);
-                        card.item(e.target.id).innerHTML = e.target.value;
+                        document.getElementById("card-number").innerHTML = e.target.value;
 
                         var flag = checkCard(e.target.value);
 
-                        if (flag == "MASTERCARD")
+                        if (flag === "MASTERCARD")
                         {
-                            document.getElementById("flag").src = "/static/mastercard.png";
+                            document.getElementById("flag").src = "{{ url_for('static', filename='mastercard.png') }}";
                             document.getElementById("flag-form").value = "MASTERCARD";
                         }
-                        else if (flag == "VISA")
+                        else if (flag === "VISA")
                         {
-                            document.getElementById("flag").src = "/static/visa.png";
+                            document.getElementById("flag").src = "{{ url_for('static', filename='visa.png') }}";
                             document.getElementById("flag-form").value = "VISA";
                         }
-                        else if (flag == "AMEX")
+                        else if (flag === "AMEX")
                         {
-                            document.getElementById("flag").src = "/static/amex.png";
+                            document.getElementById("flag").src = "{{ url_for('static', filename='amex.png') }}";
                             document.getElementById("flag-form").value = "AMEX";
                         }
                         else
@@ -47,15 +48,17 @@
                             document.getElementById("flag-form").value = "UNKNOWN";
                         }
                     }
-                    else
+                    else if (e.target.id === "input-titular")
                     {
-                        card.item(e.target.id).innerHTML = e.target.value;
+                        document.getElementById("card-titular").innerHTML = e.target.value;
                     }
 
-
-                    if (e.target.value == "")
+                    if (e.target.value === "")
                     {
-                        card.item(e.target.id).innerHTML = "--";
+                        if (e.target.id === "input-titular") document.getElementById("card-titular").innerHTML = "--";
+                        else if (e.target.id === "input-number") document.getElementById("card-number").innerHTML = "--";
+                        else if (e.target.id === "input-dv") document.getElementById("card-dv").innerHTML = "DV: --";
+                        else if (e.target.id === "input-cv") document.getElementById("card-cv").innerHTML = "CV: --";
                     }
                 };
             }
@@ -68,43 +71,43 @@
 
     <div class="user-info">
         <div>
-            <p>Put the data of your card</p>
+            <p>Insira os dados do seu cartão</p>
         </div>
         <div>
-            <a href="/mycards">Return</a>
+            <a href="/mycards">Voltar</a>
         </div>
     </div>
     <form id="form" style="padding-top: 15px" action="/addpayment" method="post">
         <div class="container add-payment-form">
             <div id="card" class="card">
                 <div class="card-row">
-                    <h3 id="0">--</h3>
+                    <h3 id="card-titular">--</h3>
                 </div>
                 <div class="card-row">
-                    <h3 id="1">--</h3>
-                    <img id="flag" src="" alt="" style="width: 70px; margin: 0px 0px">
+                    <h3 id="card-number">--</h3>
+                    <img id="flag" src="" alt="" style="width: 70px; margin: 0 0">
                     <input id="flag-form" name="flag" type="hidden" value="">
                 </div>
                 <div class="card-row">
-                    <h3 id="2">DV: --</h3>
-                    <h3 id="3">CV: --</h3>
+                    <h3 id="card-dv">DV: --</h3>
+                    <h3 id="card-cv">CV: --</h3>
                 </div>
             </div>
             <div>
                 <div>
-                    <input id="0" type="text" name="titular" placeholder="Titular: " autofocus>
+                    <input id="input-titular" type="text" name="titular" placeholder="Titular: " autofocus>
                 </div>
                 <div>
-                    <input id="1" type="text" name="cardnumber" placeholder="Card number: " maxlength=19>
+                    <input id="input-number" type="text" name="cardnumber" placeholder="Número do cartão: " maxlength=19>
                 </div>
                 <div>
-                    <input id="2" type="text" placeholder="DV: " style="width: 50px" maxlength=5>
+                    <input id="input-dv" type="text" placeholder="MM/AA: " style="width: 50px" maxlength=5>
                     <input id="validade" name="validade" type="hidden" value="">
-                    <input id="3" type="text" name="cvv" placeholder="CV: " style="width: 45px" maxlength=3>
-                    <input id="4" name="method" type="radio" value="CREDIT" checked>
-                    <label for="4">Crédito</label>
-                    <input id="5" name="method" type="radio" value="DEBIT">
-                    <label for="5">Débito</label>
+                    <input id="input-cv" type="text" name="cvv" placeholder="CVV: " style="width: 45px" maxlength=3>
+                    <input id="radio-credit" name="method" type="radio" value="CREDIT" checked>
+                    <label for="radio-credit">Crédito</label>
+                    <input id="radio-debit" name="method" type="radio" value="DEBIT">
+                    <label for="radio-debit">Débito</label>
                 </div>
             </div>
         </div>
