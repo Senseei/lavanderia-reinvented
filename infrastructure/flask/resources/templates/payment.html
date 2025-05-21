@@ -50,7 +50,7 @@
             <h3 class="row">Itens do pedido</h3>
             {% for product in session["cart"] %}
                 <div class="product-container" style="font-size: 15px">
-                    <img style="margin-right: 25px" src="{{ url_for('static', 'machine.png') }}" alt="{{ product["type"] }}">
+                    <img style="margin-right: 25px" src="{{ url_for('static', filename='machine.png') }}" alt="{{ product['type'] }}">
                     <div style="padding-bottom: 15px">
                         <h4 style="margin-bottom: 5px">{{ product["type"] }} {{ product["machine_id"] }}</h4>
                         {% if product["type"] == "Lavadora" %}
@@ -67,7 +67,7 @@
         <div class="container">
             <div class="row">
                 <h3>Forma de pagamento</h3>
-                <a href="/mycards"><img width="25px" src="{{ url_for('static', 'pencil.png') }}" alt="edit" style="cursor: pointer"></a>
+                <a href="/mycards"><img width="25px" src="{{ url_for('static', filename='pencil.png') }}" alt="edit" style="cursor: pointer"></a>
             </div>
             <div id="options" class="payment-method">
                 <div class="row" style="border-bottom: none">
@@ -77,8 +77,8 @@
                     <h3>- Seu saldo: {{ session["cash"] }}</h3>
                 </div>
             {% for method in payment_info["cards"] %}
-                <input id="{{ method["id"] }}" name="payments" type="radio" value="{{ method["cardnumber"] }}">
-                <label for="{{ method["id"] }}">{{ method["flag"] }} - {{ method["final"] }} ({{ method["method"] }})</label>
+                <input id="{{ method['id'] }}" name="payments" type="radio" value="{{ method['cardnumber'] }}">
+                <label for="{{ method['id'] }}">{{ method["flag"] }} - {{ method["final"] }} ({{ method["method"] }})</label>
             {% endfor %}
             </div>
         </div>

@@ -23,9 +23,9 @@
                 <p>{{ card["final"] }} ({{ card["method"] }}) -</p>
                 <h3>{{ card["flag"] }}</h3>
                 <div id="trash" style="margin-left: auto; margin-right: 10px">
-                    <img src="{{ url_for('static', 'trash.png') }}" style="margin-right: 8px">
+                    <img src="{{ url_for('static', filename='trash.png') }}" style="margin-right: 8px">
                     <form action="/rmvcard" method="post">
-                        <input name="card_id" type="hidden" value="{{ card["id"] }}">
+                        <input name="card_id" type="hidden" value="{{ card['id'] }}">
                         <input type="submit" value="Excluir">
                     </form>
                 </div>
