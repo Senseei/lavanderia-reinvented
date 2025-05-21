@@ -11,7 +11,7 @@ class UnitRepository(Repository[Unit], ABC):
     """
 
     @abstractmethod
-    def find_by_name(self, name: str) -> Unit:
+    def find_by_local(self, name: str) -> Unit:
         """
         Find a unit by name.
         :param name: The name of the unit to find.
