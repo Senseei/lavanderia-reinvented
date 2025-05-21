@@ -18,12 +18,12 @@
     <h1>Lavagem</h1>
     {% for washer in washers %}
         <div class="machine-container">
-            <img src="{{ url_for('static', 'machine.png') }}" alt="Lavadora">
+            <img src="{{ url_for('static', filename='machine.png') }}" alt="Lavadora">
             <div>
                 <form action="/details" method="post">
-                    <input name="locked" type="hidden" value="{{ washer["locked"] }}">
-                    <input name="id" type="hidden" value="{{ washer["id"] }}">
-                    <input type="submit" value="Lavadora {{ washer["id"] }}">
+                    <input name="locked" type="hidden" value="{{ washer['locked'] }}">
+                    <input name="id" type="hidden" value="{{ washer['id'] }}">
+                    <input type="submit" value="Lavadora {{ washer['id'] }}">
                 </form>
                 <p>Suas roupas merecem um tratamento especial, afinal de contas elas te acompanham todos os dias e precisam estar sempre confortáveis.</p>
                 {% if washer["locked"] == 0 %}
@@ -37,12 +37,12 @@
     <h1>Secagem</h1>
     {% for dryer in dryers %}
         <div class="machine-container">
-            <img src="{{ url_for('static', 'machine.png') }}" alt="Secadora">
+            <img src="{{ url_for('static', filename='machine.png') }}" alt="Secadora">
             <div>
                 <form action="/details" method="post">
-                    <input name="locked" type="hidden" value="{{ dryer["locked"] }}">
-                    <input name="id" type="hidden" value="{{ dryer["id"] }}">
-                    <input type="submit" value="Secadora {{ dryer["id"] }}">
+                    <input name="locked" type="hidden" value="{{ dryer['locked'] }}">
+                    <input name="id" type="hidden" value="{{ dryer['id'] }}">
+                    <input type="submit" value="Secadora {{ dryer['id'] }}">
                 </form>
                 <p>Suas roupas merecem um tratamento especial, afinal de contas elas te acompanham todos os dias e precisam estar sempre confortáveis.</p>
                 {% if dryer["locked"] == 0 %}
