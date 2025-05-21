@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Optional
 
 T = TypeVar('T')
 
@@ -15,7 +15,7 @@ class Repository(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def find_by_id(self, entity_id: int) -> T:
+    def find_by_id(self, entity_id: int) -> Optional[T]:
         """
         Find a domain entity by its ID.
         :param entity_id: The ID of the domain entity to find.
@@ -44,14 +44,5 @@ class Repository(ABC, Generic[T]):
         """
         Delete a domain entity by its ID.
         :param entity_id: The ID of the domain entity to delete.
-        """
-        pass
-
-    @abstractmethod
-    def update(self, entity: T) -> T:
-        """
-        Update a domain entity in the repository.
-        :param entity: The domain entity to update.
-        :return: The updated domain entity.
         """
         pass
