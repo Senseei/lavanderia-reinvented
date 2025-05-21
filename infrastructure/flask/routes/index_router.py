@@ -25,7 +25,7 @@ class IndexRouter(BaseRouter):
             if not session.get("user"):
                 return redirect(AuthRoutes.LOGIN_FULL_PATH)
 
-            return render_template("index.html", locations=self._unit_controller.find_all())
+            return render_template("index.html", locations=self._unit_controller.find_all().data)
 
         @self.blueprint.route(IndexRoutes.LOGOUT_PATH)
         def logout():
