@@ -2,7 +2,7 @@
 
 {% block main %}
     <div class="user-info">
-        <p>Hello, {{ session["name"] }}!</p>
+        <p>Hello, {{ session["user"]["name"] }}!</p>
         <ul>
             <li>
                 <a href="/cart">Cart</a>
@@ -12,12 +12,11 @@
             </li>
         </ul>
     </div>
-    {% for row in locations %}
+    {% for row in units %}
         <div class="local-container">
             <img src="{{ url_for('static', filename='location.png') }}">
             <div>
-                <form action="/local" method="post">
-                    <input name="id" type="hidden" value="{{ row['id'] }}">
+                <form action="{{ url_for('index.unit.unit', unit_id=row.id) }}" method="get">
                     <input type="submit" value="{{ row['local'] }}">
                 </form>
                 <!-- <p>{{ row["uf"] }} - {{ row["district"] }}</p>
