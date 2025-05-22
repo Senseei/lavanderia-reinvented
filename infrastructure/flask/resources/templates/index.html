@@ -13,7 +13,7 @@
         </ul>
     </div>
     {% for row in units %}
-        <a href="{{ url_for('index.unit.unit', unit_id=row.id) }}" class="local-container">
+        <a href="{{ url_for('index.unit.find_by_id', unit_id=row.id) }}" class="local-container">
             <img src="{{ url_for('static', filename='location.png') }}">
             <div>
                 <h2>{{ row['local'] }}</h2>
