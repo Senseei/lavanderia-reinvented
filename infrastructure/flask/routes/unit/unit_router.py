@@ -17,7 +17,7 @@ class UnitRouter(BaseRouter):
         self.resolve_dependencies()
 
         @self.blueprint.route("/<int:unit_id>", methods=["GET"])
-        def unit(unit_id: int):
+        def find_by_id(unit_id: int):
             response = self._unit_controller.find_by_id(unit_id)
             if not response.success:
                 return render_template("alert.html", message=response.message, path=IndexRoutes.BASE_URL)
