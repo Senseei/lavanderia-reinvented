@@ -13,14 +13,14 @@
         </ul>
     </div>
     {% for row in units %}
-        <div class="local-container">
+        <a href="{{ url_for('index.unit.unit', unit_id=row.id) }}" class="local-container">
             <img src="{{ url_for('static', filename='location.png') }}">
             <div>
-                <a href="{{ url_for('index.unit.unit', unit_id=row.id) }}">{{ row['local'] }}</a>
+                <h2>{{ row['local'] }}</h2>
                 <p>São Paulo</p>
                 <p>Av. XXX - 1000</p>
             </div>
-        </div>
+        </a>
     {% endfor %}
 
 {% endblock %}
