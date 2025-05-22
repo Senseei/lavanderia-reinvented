@@ -311,17 +311,6 @@ a.local-container {
     width: 35px;
 }
 
-.local-container input[type=submit], .machine-container input[type=submit]
-{
-    margin-top: 10px;
-    margin-bottom: 2px;
-    border: none;
-    background-color: white;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
 .local-container p
 {
     margin-bottom: 4px;
@@ -336,6 +325,26 @@ a.local-container {
     padding: 0px 10px;
     margin: 25px;
     box-shadow: 2px 2px 6px #888;
+    color: black;
+}
+
+a.machine-container {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 10px;
+    margin: 25px;
+    box-shadow: 2px 2px 6px #888;
+}
+
+.machine-container h2 {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    font-size: 18px;
+    font-weight: bold;
     color: black;
 }
 
