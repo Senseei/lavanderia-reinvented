@@ -1,12 +1,11 @@
 from domain.domain_entity import DomainEntity
-from enums.machine_type import MachineType
-from unit import Unit
+from domain.enums.machine_type import MachineType
 
 
 class Machine(DomainEntity):
-    def __init__(self, id: int, identifier: str, type: MachineType, locked: bool, unit: Unit):
+    def __init__(self, identifier: str, type: MachineType, locked: bool, unit_id: int, id: int = None):
         super().__init__(id)
         self.identifier = identifier
         self.type = type
         self.locked = locked
-        self.unit = unit
+        self.unit_id = unit_id
