@@ -7,6 +7,7 @@ from infrastructure.flask.routes.auth.auth_router import AuthRouter
 from infrastructure.flask.routes.auth.routes_constants import AuthRoutes
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.route_constants import IndexRoutes
+from infrastructure.flask.routes.unit.unit_router import UnitRouter
 
 
 class IndexRouter(BaseRouter):
@@ -18,6 +19,7 @@ class IndexRouter(BaseRouter):
 
         self.register_routes([
             AuthRouter().blueprint,
+            UnitRouter().blueprint
         ])
 
         @self.blueprint.route(IndexRoutes.BASE_URL, methods=["GET"])
@@ -25,7 +27,7 @@ class IndexRouter(BaseRouter):
             if not session.get("user"):
                 return redirect(AuthRoutes.LOGIN_FULL_PATH)
 
-            return render_template("index.html", locations=self._unit_controller.find_all().data)
+            return render_template("index.html", units=self._unit_controller.find_all().data)
 
         @self.blueprint.route(IndexRoutes.LOGOUT_PATH)
         def logout():
