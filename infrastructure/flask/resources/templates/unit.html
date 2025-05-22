@@ -23,7 +23,7 @@
                 <form action="/details" method="post">
                     <input name="locked" type="hidden" value="{{ washer['locked'] }}">
                     <input name="id" type="hidden" value="{{ washer['id'] }}">
-                    <input type="submit" value="Lavadora {{ washer['id'] }}">
+                    <input type="submit" value="Lavadora {{ washer['identifier'] }}">
                 </form>
                 <p>Suas roupas merecem um tratamento especial, afinal de contas elas te acompanham todos os dias e precisam estar sempre confortáveis.</p>
                 {% if washer["locked"] == 0 %}
