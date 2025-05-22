@@ -16,12 +16,7 @@
         <div class="local-container">
             <img src="{{ url_for('static', filename='location.png') }}">
             <div>
-                <form action="{{ url_for('index.unit.unit', unit_id=row.id) }}" method="get">
-                    <input type="submit" value="{{ row['local'] }}">
-                </form>
-                <!-- <p>{{ row["uf"] }} - {{ row["district"] }}</p>
-                <p>{{ row["address"] }} - {{ row["number"] }}</p>
-                -->
+                <a href="{{ url_for('index.unit.unit', unit_id=row.id) }}">{{ row['local'] }}</a>
                 <p>São Paulo</p>
                 <p>Av. XXX - 1000</p>
             </div>

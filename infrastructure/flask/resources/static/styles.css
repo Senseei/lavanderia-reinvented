@@ -291,6 +291,19 @@ td
     width: 35px;
 }
 
+.local-container a {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 2px;
+    border: none;
+    background-color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+
 .local-container input[type=submit], .machine-container input[type=submit]
 {
     margin-top: 10px;
