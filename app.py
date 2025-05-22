@@ -114,21 +114,6 @@ def details():
         prices.append(tmpDict)
 
     return render_template("details.html", machine=machine[0], prices=prices)
-    
-
-# TODO
-@app.route("/local", methods=["GET", "POST"])
-def local():
-    if not session.get("unit") and not request.form.get("id"):
-        return render_template("alert.html", message="Select an unit!", path="/")
-
-    if request.form.get("id"):
-        session["unit"] = request.form.get("id")
-
-    washers = db.execute("SELECT * FROM machines WHERE unit_id = ? AND type = 'Lavadora'", session["unit"])
-    dryers = db.execute("SELECT * FROM machines WHERE unit_id = ? AND type = 'Secadora'", session["unit"])
-
-    return render_template("local.html", washers=washers, dryers=dryers)
 
 # TODO
 @app.route("/payment", methods=["GET", "POST"])
