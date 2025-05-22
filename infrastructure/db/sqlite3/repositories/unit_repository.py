@@ -6,6 +6,10 @@ from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepos
 
 
 class UnitRepositoryImpl(UnitRepository, SqliteRepository):
+    def __init__(self):
+        super().__init__()
+        from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
+        self._machine_repository = MachineRepositoryImpl()
 
     def save(self, entity: Unit) -> Unit:
         cursor = self.get_cursor()
@@ -17,6 +21,12 @@ class UnitRepositoryImpl(UnitRepository, SqliteRepository):
                 "UPDATE units SET local = ? WHERE id = ?",
                 (entity.local, entity.id)
             )
+
+        # Save machines associated with the unit
+        for machine in entity.machines:
+            machine.unit_id = entity.id
+            self._machine_repository.save(machine)
+
         self.commit()
         return entity
 
@@ -27,7 +37,8 @@ class UnitRepositoryImpl(UnitRepository, SqliteRepository):
         if row:
             return Unit(
                 id=row['id'],
-                local=row['local']
+                local=row['local'],
+                machines=self._machine_repository.find_by_unit_id(entity_id)
             )
         return None
 
@@ -38,7 +49,8 @@ class UnitRepositoryImpl(UnitRepository, SqliteRepository):
         return [
             Unit(
                 id=row['id'],
-                local=row['local']
+                local=row['local'],
+                machines=self._machine_repository.find_by_unit_id(row['id'])
             ) for row in rows
         ]
 
@@ -48,6 +60,10 @@ class UnitRepositoryImpl(UnitRepository, SqliteRepository):
     def delete_by_id(self, entity_id: int):
         cursor = self.get_cursor()
         cursor.execute("DELETE FROM units WHERE id = ?", (entity_id,))
+
+        # Also delete associated machines
+        self._machine_repository.delete_by_unit_id(entity_id)
+
         self.commit()
 
     def find_by_local(self, name: str) -> Optional[Unit]:
@@ -57,6 +73,7 @@ class UnitRepositoryImpl(UnitRepository, SqliteRepository):
         if row:
             return Unit(
                 id=row['id'],
-                local=row['local']
+                local=row['local'],
+                machines=self._machine_repository.find_by_unit_id(row['id'])
             )
         return None
