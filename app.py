@@ -83,38 +83,6 @@ def cart():
 
     return render_template("cart.html", total=br(session["total_in_cart"]))
 
-
-# TODO
-@app.route("/details", methods=["GET", "POST"])
-def details():
-    if not session.get("machine") and not request.form.get("id"):
-        return render_template("alert.html", message="Please, select an unit and then a machine!", path="/")
-
-    if request.form.get("id"):
-        session["machine"] = request.form.get("id")
-
-    islocked = db.execute("SELECT * FROM machines WHERE id = ?", session["machine"])
-
-    if int(islocked[0]["locked"]) == 1:
-        return render_template("alert.html", message="Ops, looks like this machine is already in use!", path="/local")
-
-    prices = []
-
-    machine_id = request.form.get("id")
-    machine = db.execute("SELECT * FROM machines WHERE id = ?", machine_id)
-
-    cycles = db.execute("SELECT * FROM cycles ORDER BY time")
-
-    for cycle in cycles:
-        tmpDict = {}
-        tmpDict.update(cycle)
-
-        tmpDict["price"] = br(float(tmpDict["price"]))
-
-        prices.append(tmpDict)
-
-    return render_template("details.html", machine=machine[0], prices=prices)
-
 # TODO
 @app.route("/payment", methods=["GET", "POST"])
 def payment():
