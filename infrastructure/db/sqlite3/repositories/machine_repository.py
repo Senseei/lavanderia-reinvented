@@ -1,6 +1,6 @@
 from typing import Optional
 
-from application.unit.interfaces.machine_repository import MachineRepository
+from application.machine.interfaces.machine_repository import MachineRepository
 from domain.machine import Machine
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
 

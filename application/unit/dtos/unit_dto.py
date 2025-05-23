@@ -1,4 +1,4 @@
-from application.unit.dtos.machine_dto import MachineDTO
+from application.machine.dtos.machine_dto import MachineDTO
 from domain.unit import Unit
 
 
