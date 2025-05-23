@@ -16,7 +16,7 @@ class UnitRouter(BaseRouter):
         super().__init__(Blueprint("unit", __name__, url_prefix=UnitRoutes.BASE_URL))
         self.resolve_dependencies()
 
-        @self.blueprint.route("/<int:unit_id>", methods=["GET"])
+        @self.blueprint.route("/<int:unit_id>/machines", methods=["GET"])
         def find_by_id(unit_id: int):
             response = self._unit_controller.find_by_id(unit_id)
             if not response.success:
