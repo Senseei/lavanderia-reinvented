@@ -1,2 +1,2 @@
 class UnitRoutes:
-    BASE_URL = "/unit"
+    BASE_URL = "/units"
