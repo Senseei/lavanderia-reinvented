@@ -4,16 +4,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            document.getElementById("1").setAttribute("checked", "checked");
-
-            const radios = document.getElementById("options").querySelectorAll('input');
+            const radios = document.getElementById("options").querySelectorAll('input[type="radio"]');
             for (const radio of radios) {
                 radio.onclick = (e) => {
                     document.getElementById("cycle").innerHTML = e.target.value;
                     const input = document.querySelector("#price_id");
-                    input.value = e.target.id;
+                    input.value = e.target.getAttribute("data-price-id");
                 };
+            }
+
+            const firstRadio = document.querySelector('input[type="radio"]:checked');
+            if (firstRadio) {
+                document.getElementById("cycle").innerHTML = firstRadio.value;
             }
         });
     </script>
@@ -24,37 +26,40 @@
 
     <div class="user-info">
         <p>Machine details</p>
-        <form action="/local" method="post">
-            <ul>
-                <li>
-                    <input type="submit" value="Return">
-                </li>
-                <li style="border-right: none;">
-                    <a href="{{ url_for('index.index') }}">Home</a>
-                </li>
-            </ul>
-        </form>
+        <ul>
+            <li>
+                <a href="{{ url_for('index.unit.find_by_id', unit_id=machine.unit_id) }}">Return</a>
+            </li>
+            <li style="border-right: none;">
+                <a href="{{ url_for('index.index') }}">Home</a>
+            </li>
+        </ul>
     </div>
     <form action="/cart" method="post">
         <div class="machine-details">
             <img src="{{ url_for('static', filename='machine.png') }}" alt="{{ machine['type'] }}">
             <h2 style="font-weight: 300">{{ machine["type"] }} {{ machine["id"] }}</h2>
             {% if machine["locked"] == 0 %}
-                <p id="status" style="color: green">Disponível</p>
+                <p class="status-indicator" style="color: green">Disponível</p>
             {% else %}
-                <p id="status" style="color: orange">Ocupada</p>
+                <p class="status-indicator" style="color: orange">Ocupada</p>
             {% endif %}
         </div>
         <div class="machine-details">
             <h3>Ciclos</h3>
-            <p id="cycle">{{ prices[0]["price"] }} - {{ (prices[0]["time"] / 60)|int }} min</p>
+            <p id="cycle">{{ prices[0].get_formatted_price() }} - {{ (prices[0]["time"] / 60)|int }} min</p>
             <div id="options" style="margin-top: 15px; margin-bottom: 5px">
                 <input name="machine_id" type="hidden" value="{{ machine['id'] }}">
-                <input name="price_id" id="price_id" type="hidden" value="1">
-            {% for cycle in prices %}
-                <input type="radio" id="{{ cycle['id'] }}" name="time" value="{{ cycle['price'] }} - {{ (cycle['time'] / 60)|int }} min">
-                <label for="{{ cycle['id'] }}">{{ (cycle["time"] / 60)|int }} min</label>
-            {% endfor %}
+                <input name="price_id" id="price_id" type="hidden" value="{{ prices[0]['id'] }}">
+                {% for cycle in prices %}
+                    <input type="radio"
+                           id="cycle{{ cycle['id'] }}"
+                           name="time"
+                           value="{{ cycle.get_formatted_price() }} - {{ (cycle['time'] / 60)|int }} min"
+                           data-price-id="{{ cycle['id'] }}"
+                           {% if loop.first %}checked{% endif %}>
+                    <label for="cycle{{ cycle['id'] }}">{{ (cycle["time"] / 60)|int }} min</label>
+                {% endfor %}
             </div>
         </div>
         <div class="machine-details">
