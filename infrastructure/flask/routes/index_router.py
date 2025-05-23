@@ -6,6 +6,7 @@ from infrastructure.db.sqlite3.repositories.unit_repository import UnitRepositor
 from infrastructure.flask.routes.auth.auth_router import AuthRouter
 from infrastructure.flask.routes.auth.routes_constants import AuthRoutes
 from infrastructure.flask.routes.base_router import BaseRouter
+from infrastructure.flask.routes.machine.machine_router import MachineRouter
 from infrastructure.flask.routes.route_constants import IndexRoutes
 from infrastructure.flask.routes.unit.unit_router import UnitRouter
 
@@ -19,7 +20,8 @@ class IndexRouter(BaseRouter):
 
         self.register_routes([
             AuthRouter().blueprint,
-            UnitRouter().blueprint
+            UnitRouter().blueprint,
+            MachineRouter().blueprint
         ])
 
         @self.blueprint.route(IndexRoutes.BASE_URL, methods=["GET"])
