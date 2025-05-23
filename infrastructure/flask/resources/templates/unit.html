@@ -17,7 +17,7 @@
     </div>
     <h1>Lavagem</h1>
     {% for washer in washers %}
-    <a href="{{ url_for('index.unit.machine.find_by_id', machine_id=washer.id) }}" class="machine-container">
+    <a href="{{ url_for('index.machine.find_machine_with_prices', machine_id=washer.id) }}" class="machine-container">
         <img src="{{ url_for('static', filename='machine.png') }}" alt="Lavadora">
         <div>
             <h2>Lavadora {{ washer['identifier'] }}</h2>
@@ -33,7 +33,7 @@
 
 <h1>Secagem</h1>
 {% for dryer in dryers %}
-    <a href="{{ url_for('index.unit.machine.find_by_id', machine_id=dryer.id) }}" class="machine-container">
+    <a href="{{ url_for('index.machine.find_machine_with_prices', machine_id=dryer.id) }}" class="machine-container">
         <img src="{{ url_for('static', filename='machine.png') }}" alt="Secadora">
         <div>
             <h2>Secadora {{ dryer['id'] }}</h2>
