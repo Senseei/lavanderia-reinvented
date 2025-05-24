@@ -42,47 +42,6 @@ def addpayment():
 
     return render_template("addpayment.html")
 
-
-# TODO
-@app.route("/cart", methods=["GET", "POST"])
-def cart():
-    if not session.get("user_id"):
-        return redirect("/login")
-
-    if "cart" not in session:
-        session["cart"] = []
-        session["total_in_cart"] = 0.0
-
-    if request.method == "POST":
-        tmpDict = {}
-        tmpDict2 = {}
-        product = {}
-
-        machines = db.execute("SELECT * FROM machines WHERE id = ?", request.form.get("machine_id"))
-        prices = db.execute("SELECT * FROM cycles WHERE id = ?", request.form.get("price_id"))
-
-        tmpDict["machine_id"] = machines[0]["id"]
-        tmpDict["type"] = machines[0]["type"]
-        tmpDict["unit_id"] = machines[0]["unit_id"]
-
-        tmpDict2["cycle_id"] = prices[0]["id"]
-        tmpDict2["fprice"] = br(prices[0]["price"])
-        tmpDict2["price"] = prices[0]["price"]
-        tmpDict2["time"] = prices[0]["time"]
-
-        product.update(tmpDict)
-        product.update(tmpDict2)
-
-        if product in session["cart"]:
-            return render_template("alert.html", message="This product is already in your cart!", path="/local")
-
-        session["cart"].append(product)
-        session["total_in_cart"] += prices[0]["price"]
-
-        return render_template("alert.html", message="Added to your cart :)", path="/local")
-
-    return render_template("cart.html", total=br(session["total_in_cart"]))
-
 # TODO
 @app.route("/payment", methods=["GET", "POST"])
 def payment():
