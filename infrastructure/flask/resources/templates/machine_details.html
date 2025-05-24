@@ -35,7 +35,7 @@
             </li>
         </ul>
     </div>
-    <form action="/cart" method="post">
+    <form action="{{ url_for('index.cart.cart') }}" method="post">
         <div class="machine-details">
             <img src="{{ url_for('static', filename='machine.png') }}" alt="{{ machine['type'] }}">
             <h2 style="font-weight: 300">{{ machine["type"] }} {{ machine["id"] }}</h2>
