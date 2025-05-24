@@ -19,7 +19,7 @@ class MachineRouter(BaseRouter):
         def find_machine_with_prices(machine_id: int):
             response = self._machine_controller.find_machine_with_prices(machine_id)
             if not response.success:
-                return render_template("alert.html", message=response.message, path=MachineRoutes.BASE_URL)
+                return render_template("alert.html", message=response.message, path="") # TODO: implement error page
 
             machine_details = response.data
             return render_template("machine_details.html", machine=machine_details.machine, prices=machine_details.prices)
