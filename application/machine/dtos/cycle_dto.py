@@ -10,3 +10,8 @@ class CycleDTO:
 
     def get_formatted_price(self):
         return br(self.price)
+
+    def __eq__(self, other):
+        if not isinstance(other, CycleDTO):
+            return False
+        return self.id == other.id
