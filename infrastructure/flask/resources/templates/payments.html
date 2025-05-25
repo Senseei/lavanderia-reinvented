@@ -1,45 +1,133 @@
 {% extends "layout.html" %}
 
-{% block main %}
+{% block optionalhead %}
+<style>
+    /* Add card listing styles */
+    .card-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 15px 20px;
+        margin: 10px 15px;
+        border-radius: 10px;
+    }
 
+    .card-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        color: #333;
+    }
+
+    .card-details h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .card-details p {
+        font-size: 15px;
+        color: #555;
+    }
+
+    .card-brand {
+        font-size: 14px;
+        font-weight: bold;
+        color: #1E90FF;
+    }
+
+    .delete-card {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .delete-card button {
+        background: none;
+        border: none;
+        color: #1E90FF;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .delete-card img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .section-title {
+        padding: 0 15px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #888;
+        margin-top: 10px;
+    }
+
+    .card-actions {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 15px;
+    }
+
+    .card-actions li {
+        border-right: 2px solid #02A7E8;
+        padding-right: 12px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .card-actions li:last-child {
+        border-right: none;
+    }
+
+    .card-actions a {
+        color: #02A7E8;
+        text-decoration: none;
+    }
+
+</style>
+{% endblock %}
+
+{% block main %}
     {% if cards %}
         <div class="user-info">
-            <div>
-                <p>Here are your cards</p>
-            </div>
-            <ul>
-                <li>
-                    <a href="/addpayment">Add Card</a>
-                </li>
-                <li style="border-right: none;">
-                    <a href="{{ referrer }}">Return</a>
-                </li>
+            <p>Here are your cards</p>
+            <ul class="card-actions">
+                <li><a href="{{ url_for('index.payment.add_payment') }}">Add Card</a></li>
+                <li><a href="{{ url_for('index.index') }}">Return</a></li>
             </ul>
         </div>
-        <h1 style="padding: 0px 15px; color: #AAA">Cards</h1>
+
+        <h1 class="section-title">Cards</h1>
+
         {% for card in cards %}
-            <div class="container cards">
-                <h3>Card: </h3>
-                <p>{{ card["final"] }} ({{ card["method"] }}) -</p>
-                <h3>{{ card["brand"] }}</h3>
-                <div id="trash" style="margin-left: auto; margin-right: 10px">
-                    <img src="{{ url_for('static', filename='trash.png') }}" style="margin-right: 8px">
-                    <form action="/rmvcard" method="post">
-                        <input name="card_id" type="hidden" value="{{ card['id'] }}">
-                        <input type="submit" value="Excluir">
-                    </form>
+            <div class="card-display">
+                <div class="card-details">
+                    <h3>Card:</h3>
+                    <p>**** **** **** {{ card["final"] }} ({{ card["method"] }})</p>
+                    <span class="card-brand">{{ card["brand"] }}</span>
                 </div>
+                <form action="/rmvcard" method="post" class="delete-card">
+                    <input name="card_id" type="hidden" value="{{ card['id'] }}">
+                    <button type="submit">
+                        <img src="{{ url_for('static', filename='trash.png') }}" alt="Delete icon">
+                        Excluir
+                    </button>
+                </form>
             </div>
         {% endfor %}
+
     {% else %}
         <div class="user-info">
-            <div>
-                <p>You don't have cards yet.. add a new one clicking <a href="/addpayment">here</a></p>
-            </div>
-            <div>
-                <a href="{{ referrer }}">Return</a>
-            </div>
+            <p>You don't have cards yet... add a new one clicking <a href="{{ url_for('index.payment.add_payment') }}">here</a></p>
+            <a href="{{ url_for('index.index') }}">Return</a>
         </div>
     {% endif %}
-
 {% endblock %}

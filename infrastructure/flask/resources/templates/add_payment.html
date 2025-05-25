@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block optionalhead %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function formatCardNumber(value) {
+            const rawValue = value.replace(/\D/g, '');
+            return rawValue.replace(/(\d{4})(?=\d)/g, '$1 ');
+        }
+
+        function formatExpiryDate(value) {
+            const rawValue = value.replace(/\D/g, '');
+            return rawValue.length > 2 ? rawValue.substring(0, 2) + '/' + rawValue.substring(2, 4) : rawValue;
+        }
+
+        function formatCVV(value) {
+            return value.replace(/\D/g, '').substring(0, 4);
+        }
+
+        function detectCardFlag(cardNumber) {
+            const cleaned = cardNumber.replace(/\s+/g, '');
+            if (cleaned.startsWith('4')) return "VISA";
+            if (/^5[1-5]/.test(cleaned)) return "MASTERCARD";
+            if (/^3[47]/.test(cleaned)) return "AMEX";
+            return "UNKNOWN";
+        }
+
+        const fieldMappings = [
+            { inputId: "titular", displayId: "card-titular", formatter: val => val, defaultValue: "--" },
+            {
+                inputId: "cardnumber",
+                displayId: "card-number",
+                formatter: formatCardNumber,
+                defaultValue: "--",
+                additionalHandler: (val) => {
+                    const flag = detectCardFlag(val);
+                    const flagImg = document.getElementById("flag");
+                    const flagInput = document.getElementById("flag-input");
+
+                    const flagMap = {
+                        MASTERCARD: "{{ url_for('static', filename='mastercard.png') }}",
+                        VISA: "{{ url_for('static', filename='visa.png') }}",
+                        AMEX: "{{ url_for('static', filename='amex.png') }}"
+                    };
+
+                    flagImg.src = flagMap[flag] || "";
+                    flagInput.value = flag;
+                }
+            },
+            {
+                inputId: "validade",
+                displayId: "card-dv",
+                formatter: formatExpiryDate,
+                defaultValue: "DV: --",
+                displayPrefix: "DV: "
+            },
+            {
+                inputId: "cvv",
+                displayId: "card-cv",
+                formatter: formatCVV,
+                defaultValue: "CV: --",
+                displayPrefix: "CV: "
+            }
+        ];
+
+        fieldMappings.forEach(mapping => {
+            const inputElem = document.getElementById(mapping.inputId);
+            if (!inputElem) return;
+
+            inputElem.addEventListener('input', (e) => {
+                const formattedValue = mapping.formatter(e.target.value);
+                e.target.value = formattedValue;
+
+                const displayElem = document.getElementById(mapping.displayId);
+                displayElem.innerHTML = formattedValue ? (mapping.displayPrefix || '') + formattedValue : mapping.defaultValue;
+
+                if (mapping.additionalHandler) mapping.additionalHandler(formattedValue, e.target);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div class="user-info">
+    <p>Insira os dados do seu cartão</p>
+    <a href="{{ url_for('index.payment.my_cards') }}">Voltar</a>
+</div>
+
+<form id="card-form" action="{{ url_for('index.payment.add_payment') }}" method="post">
+    <div class="add-payment-form">
+        <div class="card">
+            <div class="card-row">
+                <h3 id="card-titular">--</h3>
+            </div>
+            <div class="card-row">
+                <h3 id="card-number">--</h3>
+                <img id="flag" src="" alt="">
+            </div>
+            <div class="card-row">
+                <h3 id="card-dv">DV: --</h3>
+                <h3 id="card-cv">CV: --</h3>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="titular">Nome do Titular</label>
+            <input id="titular" type="text" name="titular" placeholder="Nome como impresso no cartão" autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="cardnumber">Número do Cartão</label>
+            <input id="cardnumber" type="text" name="number" placeholder="1234 5678 9012 3456" maxlength="19">
+            <input id="flag-input" type="hidden" name="flag" value="">
+        </div>
+
+        <div class="inline-group">
+            <div class="form-group">
+                <label for="validade">Validade (MM/AA)</label>
+                <input id="validade" type="text" name="due_date" placeholder="MM/AA" maxlength="5">
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input id="cvv" type="text" name="cvv" placeholder="123" maxlength="3">
+            </div>
+        </div>
+
+        <div class="inline-group">
+            <input id="radio-credit" name="method" type="radio" value="CREDIT" checked>
+            <label for="radio-credit">Crédito</label>
+            <input id="radio-debit" name="method" type="radio" value="DEBIT">
+            <label for="radio-debit">Débito</label>
+        </div>
+
+        <input class="button button-blue-animated" type="submit" value="Adicionar cartão">
+    </div>
+</form>
+{% endblock %}

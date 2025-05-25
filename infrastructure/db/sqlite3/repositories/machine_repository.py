@@ -1,6 +1,7 @@
 from typing import Optional
 
 from application.machine.interfaces.machine_repository import MachineRepository
+from domain.enums.machine_type import MachineType
 from domain.machine import Machine
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
 
@@ -27,7 +28,7 @@ class MachineRepositoryImpl(MachineRepository, SqliteRepository):
             return Machine(
                 id=row['id'],
                 identifier=row['identifier'],
-                type=row['type'],
+                type=MachineType(row['type']),
                 locked=row['locked'],
                 unit_id=row['unit_id']
             )
@@ -41,7 +42,7 @@ class MachineRepositoryImpl(MachineRepository, SqliteRepository):
             Machine(
                 id=row['id'],
                 identifier=row['identifier'],
-                type=row['type'],
+                type=MachineType(row['type']),
                 locked=row['locked'],
                 unit_id=row['unit_id']
             ) for row in rows
@@ -63,7 +64,7 @@ class MachineRepositoryImpl(MachineRepository, SqliteRepository):
             Machine(
                 id=row['id'],
                 identifier=row['identifier'],
-                type=row['type'],
+                type=MachineType(row['type']),
                 locked=row['locked'],
                 unit_id=row['unit_id']
             ) for row in rows

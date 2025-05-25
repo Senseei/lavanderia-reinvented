@@ -3,22 +3,29 @@ from typing import Optional
 
 from application.payment.interfaces.card_repository import CardRepository
 from domain.card import Card
+from domain.enums.card_brand import CardBrand
+from domain.enums.payment_method import PaymentMethod
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
+from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 
 
 class CardRepositoryImpl(CardRepository, SqliteRepository):
+    def __init__(self):
+        super().__init__()
+        self.user_repository = UserRepositoryImpl()
+
     def save(self, entity: Card) -> Card:
         cursor = self.get_cursor()
         if not entity.id:
             cursor.execute(
-                "INSERT INTO cards (user_id, brand, number, method, due_date, cv) VALUES (?, ?, ?, ?, ?, ?)",
-                (entity.user.id, entity.brand.value, entity.number, entity.method.value, entity.due_date, entity.cv)
+                "INSERT INTO cards (user_id, titular, brand, number, method, due_date, cvv) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (entity.user.id, entity.titular, entity.brand.value, entity.number, entity.method.value, entity.due_date, entity.cvv)
             )
             entity.id = cursor.lastrowid
         else:
             cursor.execute(
-                "UPDATE cards SET user_id = ?, brand = ?, number = ?, method = ?, due_date = ?, cv = ? WHERE id = ?",
-                (entity.user.id, entity.brand.value, entity.number, entity.method.value, entity.due_date, entity.cv, entity.id)
+                "UPDATE cards SET user_id = ?, titular = ?, brand = ?, number = ?, method = ?, due_date = ?, cvv = ? WHERE id = ?",
+                (entity.user.id, entity.titular, entity.brand.value, entity.number, entity.method.value, entity.due_date, entity.cvv, entity.id)
             )
         self.commit()
         return entity
@@ -30,12 +37,13 @@ class CardRepositoryImpl(CardRepository, SqliteRepository):
         if row:
             return Card(
                 id=row['id'],
-                user=row['user_id'],
-                brand=row['brand'],
+                titular=row['titular'],
+                user=self.user_repository.find_by_id(row['user_id']),
+                brand=CardBrand(row['brand']),
                 number=row['number'],
-                method=row['method'],
+                method=PaymentMethod(row['method']),
                 due_date=datetime.fromisoformat(row['due_date']),
-                cv=row['cv']
+                cvv=row['cvv']
             )
         return None
 
@@ -46,12 +54,13 @@ class CardRepositoryImpl(CardRepository, SqliteRepository):
         return [
             Card(
                 id=row['id'],
-                user=row['user_id'],
-                brand=row['brand'],
+                user=self.user_repository.find_by_id(row['user_id']),
+                titular=row['titular'],
+                brand=CardBrand(row['brand']),
                 number=row['number'],
-                method=row['method'],
+                method=PaymentMethod(row['method']),
                 due_date=datetime.fromisoformat(row['due_date']),
-                cv=row['cv']
+                cvv=row['cvv']
             ) for row in rows
         ]
 
@@ -70,11 +79,12 @@ class CardRepositoryImpl(CardRepository, SqliteRepository):
         return [
             Card(
                 id=row['id'],
-                user=row['user_id'],
-                brand=row['brand'],
+                user=self.user_repository.find_by_id(row['user_id']),
+                titular=row['titular'],
+                brand=CardBrand(row['brand']),
                 number=row['number'],
-                method=row['method'],
+                method=PaymentMethod(row['method']),
                 due_date=datetime.fromisoformat(row['due_date']),
-                cv=row['cv']
+                cvv=row['cvv']
             ) for row in rows
         ]

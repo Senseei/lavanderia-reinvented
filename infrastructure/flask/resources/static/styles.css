@@ -490,28 +490,6 @@ a.machine-container {
     justify-content: space-between;
 }
 
-.add-payment-form
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 15px;
-}
-
-.cards
-{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 10px 10px;
-}
-
-.cards p
-{
-    padding: 0px 5px;
-}
-
 /* Estilos base para todas as mensagens flash */
 .flash-messages {
     width: 100%;
@@ -581,4 +559,148 @@ a.machine-container {
         margin: 0;
         overflow: hidden;
     }
+}
+
+/* ========== Card Preview ========== */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 25px 30px;
+    margin-bottom: 20px;
+    color: white;
+    height: 230px;
+    width: 100%;
+    max-width: 400px;
+    background-color: #6A0DAD;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.card #flag {
+    height: 40px;
+    width: auto;
+}
+
+/* ========== Payment Form Container ========== */
+.add-payment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.inline-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    height: 40px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #1E90FF;
+    outline: none;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"] + label {
+    border: 2px solid #014CFC;
+    color: #014CFC;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+input[type="radio"]:checked + label {
+    background-color: #014CFC;
+    color: white;
+}
+
+.button.button-blue-animated {
+    background-color: white;
+    color: #1E90FF;
+    border: 2px solid #1E90FF;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 0;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 8px;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
+}
+
+.button.button-blue-animated:hover {
+    background-color: #1E90FF;
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-image: linear-gradient(to top, white, #E0FFFF);
+    border: 2px solid #e7e7e7;
+    color: black;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.user-info p {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.user-info a {
+    font-weight: 600;
+    font-size: 16px;
+    color: #02A7E8;
+    text-decoration: none;
 }

@@ -40,7 +40,7 @@ def addpayment():
 
         return render_template("alert.html", message="Success!", path="/mycards")
 
-    return render_template("addpayment.html")
+    return render_template("add_payment.html")
 
 # TODO
 @app.route("/payment", methods=["GET", "POST"])
