@@ -120,21 +120,6 @@ def mycards():
 
     return render_template("payments.html", cards=cards)
 
-# TODO
-@app.route("/rmvfromcart", methods=["GET", "POST"])
-def rmv():
-    if not request.form.get("cycle_id") and not request.form.get("machine_id"):
-        return redirect("/cart")
-
-    for i in range(len(session["cart"])):
-        if int(session["cart"][i]["cycle_id"]) == int(request.form.get("cycle_id")) and int(session["cart"][i]["machine_id"]) == int(request.form.get("machine_id")):
-            session["total_in_cart"] -= session["cart"][i]["price"]
-            del(session["cart"][i])
-
-            return redirect("/cart")
-
-    return redirect("/cart")
-
 
 # TODO
 @app.route("/rmvcard", methods=["GET", "POST"])
