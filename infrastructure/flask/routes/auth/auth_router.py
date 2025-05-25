@@ -38,14 +38,14 @@ class AuthRouter(BaseRouter):
                     return redirect(request.referrer)
 
                 flash("Success! Now, log in to your new account to enjoy our features :)", "success")
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('index.auth.login'))
 
             return render_template("register.html")
 
         @self.blueprint.route(AuthRoutes.LOGOUT_PATH)
         def logout():
             session.clear()
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("index.auth.login"))
 
     def resolve_dependencies(self):
         repository = UserRepositoryImpl()
