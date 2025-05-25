@@ -34,10 +34,18 @@ class AuthRouter(BaseRouter):
             if request.method == "POST":
                 response = self._auth_controller.register(RequestDTO(request.form))
                 if not response.success:
-                    return render_template("alert.html", message=response.message, path=AuthRoutes.REGISTER_FULL_PATH)
-                return render_template("alert.html", message="Success! Now, log in to your new account to enjoy our features :)", path=AuthRoutes.LOGIN_FULL_PATH)
+                    flash(response.message, "error")
+                    return redirect(request.referrer)
+
+                flash("Success! Now, log in to your new account to enjoy our features :)", "success")
+                return redirect(AuthRoutes.LOGIN_PATH)
 
             return render_template("register.html")
+
+        @self.blueprint.route(AuthRoutes.LOGOUT_PATH)
+        def logout():
+            session.clear()
+            return redirect(IndexRoutes.BASE_URL)
 
     def resolve_dependencies(self):
         repository = UserRepositoryImpl()

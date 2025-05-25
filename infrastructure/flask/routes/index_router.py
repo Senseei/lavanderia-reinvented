@@ -30,11 +30,6 @@ class IndexRouter(BaseRouter):
         def index():
             return render_template("index.html", units=self._unit_controller.find_all().data)
 
-        @self.blueprint.route(IndexRoutes.LOGOUT_PATH)
-        def logout():
-            session.clear()
-            return redirect(IndexRoutes.BASE_URL)
-
     def resolve_dependencies(self):
         unit_repository = UnitRepositoryImpl()
         unit_service = UnitService(unit_repository)
