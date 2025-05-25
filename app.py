@@ -99,29 +99,6 @@ def payment():
     return render_template("payment.html", payment_info=payment_info)
 
 # TODO
-@app.route("/mycards")
-def mycards():
-    if not session["user_id"]:
-        return redirect("/")
-
-    rows = db.execute("SELECT * FROM cards WHERE user_id = ?", session["user_id"])
-    cards = []
-
-    for card in rows:
-        tmpDict = {}
-        tmpDict.update(card)
-        final = "**** **** **** "
-        for i in range(4):
-            number = str(card["cardnumber"])
-            final = final + number[len(number) - 4 + i]
-        tmpDict["final"] = final
-
-        cards.append(tmpDict)
-
-    return render_template("payments.html", cards=cards)
-
-
-# TODO
 @app.route("/rmvcard", methods=["GET", "POST"])
 def rmvcard():
     if not session["user_id"]:
