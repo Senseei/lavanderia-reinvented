@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session, redirect, render_template, flash
+from flask import Blueprint, request, session, redirect, render_template, flash, url_for
 
 from adapters.auth.auth_controller import AuthControllerAdapter
 from adapters.dtos.request_dto import RequestDTO
@@ -38,14 +38,14 @@ class AuthRouter(BaseRouter):
                     return redirect(request.referrer)
 
                 flash("Success! Now, log in to your new account to enjoy our features :)", "success")
-                return redirect(AuthRoutes.LOGIN_PATH)
+                return redirect(url_for('auth.login'))
 
             return render_template("register.html")
 
         @self.blueprint.route(AuthRoutes.LOGOUT_PATH)
         def logout():
             session.clear()
-            return redirect(IndexRoutes.BASE_URL)
+            return redirect(url_for("auth.login"))
 
     def resolve_dependencies(self):
         repository = UserRepositoryImpl()
