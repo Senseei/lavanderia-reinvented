@@ -1,9 +1,9 @@
 import datetime
 
 from domain.domain_entity import DomainEntity
-from enums.card_brand import CardBrand
-from enums.payment_method import PaymentMethod
-from user import User
+from domain.enums.card_brand import CardBrand
+from domain.enums.payment_method import PaymentMethod
+from domain.user import User
 
 
 class Card(DomainEntity):
