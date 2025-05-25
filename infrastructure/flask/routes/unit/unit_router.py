@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, request
 
 from adapters.unit.unit_controller import UnitControllerAdapter
 from application.unit.usecases.unit_service import UnitService
@@ -20,7 +20,8 @@ class UnitRouter(BaseRouter):
         def find_by_id(unit_id: int):
             response = self._unit_controller.find_by_id(unit_id)
             if not response.success:
-                return render_template("alert.html", message=response.message, path=IndexRoutes.BASE_URL)
+                flash(response.message, "error")
+                return redirect(request.referrer)
 
             unit = response.data
 

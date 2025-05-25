@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, request, flash
 
 from adapters.machine.machine_controller import MachineControllerAdapter
 from application.machine.usecases.machine_service import MachineService
@@ -19,7 +19,8 @@ class MachineRouter(BaseRouter):
         def find_machine_with_prices(machine_id: int):
             response = self._machine_controller.find_machine_with_prices(machine_id)
             if not response.success:
-                return render_template("alert.html", message=response.message, path="") # TODO: implement error page
+                flash(response.message, "error")
+                return redirect(request.referrer)
 
             machine_details = response.data
             return render_template("machine_details.html", machine=machine_details.machine, prices=machine_details.prices)

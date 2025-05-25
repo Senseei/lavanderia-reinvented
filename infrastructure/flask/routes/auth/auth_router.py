@@ -1,4 +1,4 @@
-from flask import Blueprint, request, session, redirect, render_template
+from flask import Blueprint, request, session, redirect, render_template, flash
 
 from adapters.auth.auth_controller import AuthControllerAdapter
 from adapters.dtos.request_dto import RequestDTO
@@ -21,7 +21,9 @@ class AuthRouter(BaseRouter):
             if request.method == "POST":
                 response = self._auth_controller.login(RequestDTO(request.form))
                 if not response.success:
-                    return render_template("alert.html", message=response.message, path=AuthRoutes.LOGIN_FULL_PATH)
+                    flash(response.message, "error")
+                    return redirect(request.referrer)
+
                 session["user"] = response.data
                 return redirect(IndexRoutes.BASE_URL)
 
