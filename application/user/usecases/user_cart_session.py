@@ -3,15 +3,18 @@ from application.machine.dtos.cycle_dto import CycleDTO
 from application.machine.dtos.machine_dto import MachineDTO
 from application.machine.interfaces.cycle_repository import CycleRepository
 from application.machine.interfaces.machine_repository import MachineRepository
+from application.ticket.interfaces.ticket_repository import TicketRepository
 from application.user.dtos.session_cart_item import SessionCartItem
 from application.util.currency import br
 
 
 class UserCartSession:
-    def __init__(self, machine_repository: MachineRepository, cycle_repository: CycleRepository):
+    def __init__(self, machine_repository: MachineRepository, cycle_repository: CycleRepository, ticket_repository: TicketRepository):
         self._machine_repository = machine_repository
         self._cycle_repository = cycle_repository
+        self._ticket_repository = ticket_repository
         self._cart: list[SessionCartItem] = []
+        self._discounts: float = 0.0
 
     def add_item(self, machine_id: int, cycle_id: int) -> bool:
         machine = self._machine_repository.find_by_id(machine_id)
@@ -43,5 +46,18 @@ class UserCartSession:
             total += item.cycle.price
         return total
 
+    def get_total_with_discounts(self) -> float:
+        return self.get_total() - self._discounts
+
+    def get_discounts(self) -> float:
+        return self._discounts
+
     def get_formatted_total(self) -> str:
         return br(self.get_total())
+
+    def apply_discount(self, code: str) -> bool:
+        ticket = self._ticket_repository.find_by_code(code)
+        if not ticket:
+            return False
+        self._discounts = ticket.apply(self.get_total())
+        return True
