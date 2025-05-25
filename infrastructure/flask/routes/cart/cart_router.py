@@ -57,7 +57,7 @@ class CartRouter(BaseRouter):
                 pass
 
             payment_info = {
-                "products": user_cart.get_formatted_total(),
+                "products": br(user_cart.get_total()),
                 "total": br(user_cart.get_total_with_discounts()),
                 "discounts": br(user_cart.get_discounts()),
                 "cards": self._payment_controller.find_user_cards(session["user"].id).data
