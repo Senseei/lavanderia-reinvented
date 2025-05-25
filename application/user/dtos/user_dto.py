@@ -7,5 +7,3 @@ class UserDTO:
         self.username = user.username
         self.name = user.name
         self.cash = user.cash
-        self.created_at = user.created_at
-        self.updated_at = user.updated_at

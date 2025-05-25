@@ -7,5 +7,3 @@ class UnitDTO:
         self.id = unit.id
         self.local = unit.local
         self.machines = [MachineDTO(machine) for machine in unit.machines]
-        self.created_at = unit.created_at
-        self.updated_at = unit.updated_at

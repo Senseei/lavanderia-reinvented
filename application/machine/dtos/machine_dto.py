@@ -7,8 +7,6 @@ class MachineDTO:
         self.type = machine.type
         self.unit_id = machine.unit_id
         self.locked = machine.locked
-        self.created_at = machine.created_at
-        self.updated_at = machine.updated_at
 
     def __eq__(self, other):
         if not isinstance(other, MachineDTO):
