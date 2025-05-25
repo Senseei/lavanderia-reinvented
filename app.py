@@ -17,32 +17,6 @@ locations = db.execute("SELECT * FROM units")
 app.register_blueprint(IndexRouter().blueprint)
 
 # TODO
-@app.route("/addpayment", methods=["GET", "POST"])
-def addpayment():
-    if not session["user_id"] or not session.get("user_id"):
-        return redirect("/")
-
-    if request.method == "POST":
-        if not request.form.get("titular") or not request.form.get("cardnumber") or not request.form.get("validade") or not request.form.get("cvv"):
-            return render_template("alert.html", message="Could not add your card.. Missing data!", path="/addpayment")
-
-        cardnumber = int(request.form.get("cardnumber").replace(" ", ""))
-        flag = request.form.get("flag")
-        method = request.form.get("method")
-        validade = request.form.get("validade")
-        cv = request.form.get("cvv")
-
-        rows = db.execute("SELECT * FROM cards WHERE cardnumber = ? AND method = ? AND user_id = ?", cardnumber, method, session["user_id"])
-        if len(rows) > 0:
-            return render_template("alert.html", message="You have already added this card!", path="/addpayment")
-
-        db.execute("INSERT INTO cards (user_id, flag, cardnumber, method, validade, cv) VALUES (?, ?, ?, ?, ?, ?)", session["user_id"], flag, cardnumber, method, validade, cv)
-
-        return render_template("alert.html", message="Success!", path="/mycards")
-
-    return render_template("add_payment.html")
-
-# TODO
 @app.route("/payment", methods=["GET", "POST"])
 def payment():
     if not session.get("user_id"):
@@ -97,19 +71,6 @@ def payment():
         payment_info["cards"].append(tmpDict)
 
     return render_template("payment.html", payment_info=payment_info)
-
-# TODO
-@app.route("/rmvcard", methods=["GET", "POST"])
-def rmvcard():
-    if not session["user_id"]:
-        return redirect("/")
-
-    if request.method == "POST":
-        card_id = request.form.get("card_id")
-
-        db.execute("DELETE FROM cards WHERE id = ?", card_id)
-
-    return redirect("/mycards")
 
 
 def br(value):

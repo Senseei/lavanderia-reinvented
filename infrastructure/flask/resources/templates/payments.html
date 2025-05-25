@@ -100,7 +100,7 @@
         <div class="user-info">
             <p>Here are your cards</p>
             <ul class="card-actions">
-                <li><a href="{{ url_for('index.payment.add_payment') }}">Add Card</a></li>
+                <li><a href="{{ url_for('index.payments.add_card') }}">Add Card</a></li>
                 <li><a href="{{ url_for('index.index') }}">Return</a></li>
             </ul>
         </div>
@@ -114,7 +114,7 @@
                     <p>**** **** **** {{ card["final"] }} ({{ card["method"] }})</p>
                     <span class="card-brand">{{ card["brand"] }}</span>
                 </div>
-                <form action="/rmvcard" method="post" class="delete-card">
+                <form action="{{ url_for('index.payments.delete_card') }}" method="post" class="delete-card">
                     <input name="card_id" type="hidden" value="{{ card['id'] }}">
                     <button type="submit">
                         <img src="{{ url_for('static', filename='trash.png') }}" alt="Delete icon">
@@ -126,7 +126,7 @@
 
     {% else %}
         <div class="user-info">
-            <p>You don't have cards yet... add a new one clicking <a href="{{ url_for('index.payment.add_payment') }}">here</a></p>
+            <p>You don't have cards yet... add a new one clicking <a href="{{ url_for('index.payments.add_card') }}">here</a></p>
             <a href="{{ url_for('index.index') }}">Return</a>
         </div>
     {% endif %}

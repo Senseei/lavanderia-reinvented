@@ -1,4 +1,4 @@
-from flask import Blueprint, session, render_template, request, url_for, redirect, flash
+from flask import Blueprint, session, render_template, request, redirect, flash
 
 from adapters.dtos.request_dto import RequestDTO
 from adapters.payment.payment_controller import PaymentControllerAdapter
@@ -14,19 +14,18 @@ class PaymentRouter(BaseRouter):
     _payment_controller: PaymentControllerAdapter
 
     def __init__(self):
-        super().__init__(Blueprint("payment", __name__, url_prefix=PaymentRoutes.BASE_URL))
+        super().__init__(Blueprint("payments", __name__, url_prefix=PaymentRoutes.BASE_URL))
         self.resolve_dependencies()
 
-        @self.blueprint.route("/my-cards", methods=["GET"])
+        @self.blueprint.route(PaymentRoutes.MY_CARDS, methods=["GET"])
         @login_required
         def my_cards():
             response = self._payment_controller.find_user_cards(session["user"].id)
             return render_template("payments.html", cards=response.data)
 
-        @self.blueprint.route("/add-card", methods=["GET", "POST"])
+        @self.blueprint.route(PaymentRoutes.ADD_CARD, methods=["GET", "POST"])
         @login_required
-        def add_payment():
-
+        def add_card():
             if request.method == "POST":
                 response = self._payment_controller.add_card(RequestDTO(request.form), session["user"].id)
                 if not response.success:
@@ -37,6 +36,23 @@ class PaymentRouter(BaseRouter):
                 return redirect(request.referrer)
 
             return render_template("add_payment.html")
+
+        @self.blueprint.route(PaymentRoutes.DELETE_CARD, methods=["POST"])
+        @login_required
+        def delete_card():
+            card_id = request.form.get("card_id")
+            if not card_id:
+                flash("Card ID is required", "error")
+                return redirect(request.referrer)
+
+            response = self._payment_controller.delete_card(card_id, session["user"].id)
+            if not response.success:
+                flash(response.message, "error")
+                return redirect(request.referrer)
+
+            flash("Card deleted successfully!", "success")
+            return redirect(request.referrer)
+
 
     def resolve_dependencies(self):
         repository = CardRepositoryImpl()

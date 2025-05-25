@@ -84,10 +84,10 @@
 {% block main %}
 <div class="user-info">
     <p>Insira os dados do seu cartão</p>
-    <a href="{{ url_for('index.payment.my_cards') }}">Voltar</a>
+    <a href="{{ url_for('index.payments.my_cards') }}">Voltar</a>
 </div>
 
-<form id="card-form" action="{{ url_for('index.payment.add_payment') }}" method="post">
+<form id="card-form" action="{{ url_for('index.payments.add_card') }}" method="post">
     <div class="add-payment-form">
         <div class="card">
             <div class="card-row">

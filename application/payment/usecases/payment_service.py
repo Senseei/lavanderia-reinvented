@@ -1,4 +1,5 @@
 from adapters.payment.dtos.new_card_dto import NewCardDTO
+from application.errors.entity_not_found_error import EntityNotFoundError
 from application.payment.dtos.card_dto import CardDTO
 from application.payment.interfaces.card_repository import CardRepository
 from application.user.interfaces.user_repository import UserRepository
@@ -35,6 +36,16 @@ class PaymentService:
         print(card)
 
         return CardDTO(self._repository.save(card))
+
+    def delete_card(self, card_id, owner_id):
+        card = self._repository.find_by_id(card_id)
+        if not card:
+            raise EntityNotFoundError("Card")
+
+        if card.user.id != owner_id:
+            raise ValueError("User does not own this card")
+
+        self._repository.delete(card)
 
     @classmethod
     def get_card_brand(cls, card_number: str) -> CardBrand:

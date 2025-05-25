@@ -29,3 +29,16 @@ class PaymentControllerAdapter:
             return ResponseDTO.success_response(self._service.add_card(card_dto, owner_id))
         except ValueError as e:
             return ResponseDTO.error_response(str(e))
+
+    def delete_card(self, card_id: str, owner_id: int) -> ResponseDTO[None]:
+        """
+        Delete a card for a user.
+        :param card_id: The ID of the card to be deleted.
+        :param owner_id: The ID of the user who owns the card.
+        :return: None
+        """
+        try:
+            self._service.delete_card(card_id, owner_id)
+            return ResponseDTO.success_response(None)
+        except Exception as e:
+            return ResponseDTO.error_response(str(e))
