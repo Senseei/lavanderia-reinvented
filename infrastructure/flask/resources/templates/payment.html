@@ -21,9 +21,9 @@
 
     <div class="user-info">
         <p>Revision</p>
-        <a href="/cart">Return</a>
+        <a href="{{ url_for('index.cart.cart') }}">Return</a>
     </div>
-    <form action="/payment" method="post">
+    <form action="{{ url_for('index.cart.payment') }}" method="post">
         <div class=container>
             <h3 class="row">Resumo</h3>
             <div class="row">
@@ -67,18 +67,18 @@
         <div class="container">
             <div class="row">
                 <h3>Forma de pagamento</h3>
-                <a href="/mycards"><img width="25px" src="{{ url_for('static', filename='pencil.png') }}" alt="edit" style="cursor: pointer"></a>
+                <a href="{{ url_for('index.payments.my_cards') }}"><img width="25px" src="{{ url_for('static', filename='pencil.png') }}" alt="edit" style="cursor: pointer"></a>
             </div>
             <div id="options" class="payment-method">
                 <div class="row" style="border-bottom: none">
                     <input name="payment_method" id="payment_method" type="hidden" value="0">
                     <input id="0" name="payments" type="radio" value="Carteira" checked>
                     <label for="0"> Sua Carteira</label>
-                    <h3>- Seu saldo: {{ session["cash"] }}</h3>
+                    <h3>- Seu saldo: {{ session["user"].get_formatted_cash() }}</h3>
                 </div>
-            {% for method in payment_info["cards"] %}
-                <input id="{{ method['id'] }}" name="payments" type="radio" value="{{ method['cardnumber'] }}">
-                <label for="{{ method['id'] }}">{{ method["flag"] }} - {{ method["final"] }} ({{ method["method"] }})</label>
+            {% for card in payment_info["cards"] %}
+                <input id="{{ card['id'] }}" name="payments" type="radio" value="{{ card['id'] }}">
+                <label for="{{ card['id'] }}">{{ card.brand }} - {{ card.final }} ({{ card.method }})</label>
             {% endfor %}
             </div>
         </div>

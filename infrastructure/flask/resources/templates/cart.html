@@ -39,22 +39,20 @@
     {% endfor %}
 
     {% if cart.get_items() %}
-        <form action="/payment" method="get">
-            <div class=container>
-                <h3 class="row">Resumo</h3>
-                <div class="row">
-                    <p>Produtos</p>
-                    <p>{{ cart.get_formatted_total() }}</p>
-                </div>
-                <div class="row" style="font-weight: bold">
-                    <p>Total</p>
-                    <p>{{ cart.get_formatted_total() }}</p>
-                </div>
+        <div class=container>
+            <h3 class="row">Resumo</h3>
+            <div class="row">
+                <p>Produtos</p>
+                <p>{{ cart.get_formatted_total() }}</p>
             </div>
-            <div>
-                <a class="button button2" style="text-decoration: none; color: white" href="{{ url_for('index.payments.my_cards') }}">Continuar</a>
+            <div class="row" style="font-weight: bold">
+                <p>Total</p>
+                <p>{{ cart.get_formatted_total() }}</p>
             </div>
-        </form>
+        </div>
+        <div>
+            <a class="button button2" style="text-decoration: none; color: white" href="{{ url_for('index.cart.payment') }}">Continuar</a>
+        </div>
     {% endif %}
 
 {% endblock %}

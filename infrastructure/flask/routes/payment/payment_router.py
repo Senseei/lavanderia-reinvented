@@ -1,4 +1,4 @@
-from flask import Blueprint, session, render_template, request, redirect, flash
+from flask import Blueprint, session, render_template, request, redirect, flash, url_for
 
 from adapters.dtos.request_dto import RequestDTO
 from adapters.payment.payment_controller import PaymentControllerAdapter
@@ -33,7 +33,7 @@ class PaymentRouter(BaseRouter):
                     return redirect(request.referrer)
 
                 flash("Card added successfully!", "success")
-                return redirect(request.referrer)
+                return redirect(url_for('index.payments.my_cards'))
 
             return render_template("add_payment.html")
 
