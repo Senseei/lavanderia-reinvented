@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, flash, redirect
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session
 
 from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 from infrastructure.flask.routes.base_router import BaseRouter
@@ -27,6 +27,19 @@ class CartRouter(BaseRouter):
                 return redirect(request.referrer)
 
             return render_template("cart.html", cart=user_cart)
+
+        @self.blueprint.route(CartRoutes.REMOVE_ITEM, methods=["POST"])
+        def remove_item():
+            if not request.form.get("cycle_id") and not request.form.get("machine_id"):
+                return redirect(url_for('index.cart.cart'))
+
+            user_cart = CartSessionAdapter.get_cart()
+            user_cart.remove_item(int(request.form.get("machine_id")), int(request.form.get("cycle_id")))
+
+            CartSessionAdapter.save_cart(user_cart)
+
+            flash("Produto removido do carrinho!", "success")
+            return redirect(url_for("index.cart.cart"))
 
     def resolve_dependencies(self):
         pass
