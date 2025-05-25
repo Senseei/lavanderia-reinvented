@@ -12,7 +12,7 @@
                     <a href="/addpayment">Add Card</a>
                 </li>
                 <li style="border-right: none;">
-                    <a href="/payment">Return</a>
+                    <a href="{{ referrer }}">Return</a>
                 </li>
             </ul>
         </div>
@@ -21,7 +21,7 @@
             <div class="container cards">
                 <h3>Card: </h3>
                 <p>{{ card["final"] }} ({{ card["method"] }}) -</p>
-                <h3>{{ card["flag"] }}</h3>
+                <h3>{{ card["brand"] }}</h3>
                 <div id="trash" style="margin-left: auto; margin-right: 10px">
                     <img src="{{ url_for('static', filename='trash.png') }}" style="margin-right: 8px">
                     <form action="/rmvcard" method="post">
@@ -37,7 +37,7 @@
                 <p>You don't have cards yet.. add a new one clicking <a href="/addpayment">here</a></p>
             </div>
             <div>
-                <a href="/payment">Return</a>
+                <a href="{{ referrer }}">Return</a>
             </div>
         </div>
     {% endif %}

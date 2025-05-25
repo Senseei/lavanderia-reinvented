@@ -1,13 +1,13 @@
-from flask import Blueprint, render_template, session, redirect
+from flask import Blueprint, render_template
 
 from adapters.unit.unit_controller import UnitControllerAdapter
 from application.unit.usecases.unit_service import UnitService
 from infrastructure.db.sqlite3.repositories.unit_repository import UnitRepositoryImpl
 from infrastructure.flask.routes.auth.auth_router import AuthRouter
-from infrastructure.flask.routes.auth.routes_constants import AuthRoutes
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.cart.cart_router import CartRouter
 from infrastructure.flask.routes.machine.machine_router import MachineRouter
+from infrastructure.flask.routes.payment.payment_router import PaymentRouter
 from infrastructure.flask.routes.route_constants import IndexRoutes
 from infrastructure.flask.routes.unit.unit_router import UnitRouter
 
@@ -23,7 +23,8 @@ class IndexRouter(BaseRouter):
             AuthRouter().blueprint,
             UnitRouter().blueprint,
             MachineRouter().blueprint,
-            CartRouter().blueprint
+            CartRouter().blueprint,
+            PaymentRouter().blueprint
         ])
 
         @self.blueprint.route(IndexRoutes.BASE_URL, methods=["GET"])
