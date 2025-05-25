@@ -28,9 +28,6 @@ class IndexRouter(BaseRouter):
 
         @self.blueprint.route(IndexRoutes.BASE_URL, methods=["GET"])
         def index():
-            if not session.get("user"):
-                return redirect(AuthRoutes.LOGIN_FULL_PATH)
-
             return render_template("index.html", units=self._unit_controller.find_all().data)
 
         @self.blueprint.route(IndexRoutes.LOGOUT_PATH)
