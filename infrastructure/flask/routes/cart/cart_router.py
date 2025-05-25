@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, flash, redirect
 
 from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 from infrastructure.flask.routes.base_router import BaseRouter
@@ -19,10 +19,12 @@ class CartRouter(BaseRouter):
                 cycle_id = request.form.get("price_id")
 
                 if not user_cart.add_item(int(machine_id), int(cycle_id)):
-                    return render_template("alert.html", message="This product is already in your cart!", path="/local")
+                    flash("Este produto já está no seu carrinho!", "warning")
+                    return redirect(request.referrer)
 
                 CartSessionAdapter.save_cart(user_cart)
-                return render_template("alert.html", message="Added to your cart :)", path="/local")
+                flash("Produto adicionado ao carrinho!", "success")
+                return redirect(request.referrer)
 
             return render_template("cart.html", cart=user_cart)
 

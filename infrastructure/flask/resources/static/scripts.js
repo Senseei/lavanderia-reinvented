@@ -136,3 +136,17 @@ function checkCard(cardnumber)
     }
     return flag;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    if (alerts.length > 0) {
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.classList.add('fade-out');
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            }, 5000);
+        });
+    }
+});
