@@ -1,11 +1,10 @@
-from flask import Blueprint, render_template, redirect, request
+from flask import Blueprint, render_template, redirect, request, flash
 
 from adapters.unit.unit_controller import UnitControllerAdapter
 from application.unit.usecases.unit_service import UnitService
 from domain.enums.machine_type import MachineType
 from infrastructure.db.sqlite3.repositories.unit_repository import UnitRepositoryImpl
 from infrastructure.flask.routes.base_router import BaseRouter
-from infrastructure.flask.routes.route_constants import IndexRoutes
 from infrastructure.flask.routes.unit.routes_constants import UnitRoutes
 
 
