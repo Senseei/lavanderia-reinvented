@@ -1,4 +1,4 @@
-from flask import session
+from flask import session, has_request_context
 
 from application.ticket.usecases.ticket_service import TicketService
 from application.user.usecases.user_cart_session import UserCartSession
@@ -17,31 +17,34 @@ class CartSessionAdapter:
 
         cart = UserCartSession.get_instance(machine_repository, cycle_repository, ticket_service)
 
-        if "cart_items" in session:
-            cart.sync_items(session["cart_items"])
+        if has_request_context():
+            if "cart_items" in session:
+                cart.sync_items(session["cart_items"])
 
-        if "discounts" in session:
-            cart.sync_discounts(session["discounts"])
+            if "discounts" in session:
+                cart.sync_discounts(session["discounts"])
 
         return cart
 
     @staticmethod
     def save_cart(cart: UserCartSession) -> None:
-        session["cart_items"] = [
-            {
-                "machine_id": item.machine.id,
-                "cycle_id": item.cycle.id
-            }
-            for item in cart.get_items()
-        ]
+        if has_request_context():
+            session["cart_items"] = [
+                {
+                    "machine_id": item.machine.id,
+                    "cycle_id": item.cycle.id
+                }
+                for item in cart.get_items()
+            ]
 
-        session["discounts"] = cart.get_discounts()
+            session["discounts"] = cart.get_discounts()
 
     @staticmethod
     def clear_cart() -> None:
-        if "cart_items" in session:
-            session.pop("cart_items")
-        if "discounts" in session:
-            session.pop("discounts")
+        if has_request_context():
+            if "cart_items" in session:
+                session.pop("cart_items")
+            if "discounts" in session:
+                session.pop("discounts")
 
         UserCartSession.reset_instance()
