@@ -140,6 +140,17 @@ td
     height: 120px;
 }
 
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 250px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding-left: 10px;
+}
+
+
 .login-form a
 {
     color: #1E90FF;
