@@ -1,18 +1,3 @@
-CREATE TABLE users (id INTEGER, username TEXT, name TEXT, password TEXT, cash NUMERIC DEFAULT 2000.00, PRIMARY KEY(id));
-CREATE TABLE cycles (id INTEGER, price NUMERIC, time INTEGER, PRIMARY KEY(id));
-CREATE TABLE units (id INTEGER, local TEXT, PRIMARY KEY(id));
-CREATE TABLE history (id INTEGER, user_id INTEGER,  unit_id INTEGER, machine_id INTEGER, cycle_id INTEGER, PRIMARY KEY(id), FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(unit_id) REFERENCES units(id), FOREIGN KEY(cycle_id) REFERENCES cycles(id));
-CREATE TABLE IF NOT EXISTS "machines"
-(
-    id         INTEGER,
-    type       TEXT,
-    locked     BIT,
-    unit_id    INTEGER
-        references units,
-    identifier TEXT
-        constraint machines_pk
-            unique
-);
 CREATE TABLE IF NOT EXISTS "cards"
 (
     id       INTEGER
@@ -46,4 +31,41 @@ CREATE TABLE IF NOT EXISTS "used_tickets"
         references discounts (id),
     constraint used_tickets_pk
         unique (user_id, ticket_id)
+);
+CREATE TABLE IF NOT EXISTS "cycles"
+(
+    id    INTEGER
+        primary key,
+    price NUMERIC default 0 not null,
+    time  INTEGER           not null
+);
+CREATE TABLE IF NOT EXISTS "machines"
+(
+    id         INTEGER
+        constraint machines_pk
+            primary key,
+    type       TEXT          not null,
+    locked     BIT default 0 not null,
+    unit_id    INTEGER
+        references units,
+    identifier TEXT          not null
+        constraint machines_pk_2
+            unique
+);
+CREATE TABLE IF NOT EXISTS "units"
+(
+    id    INTEGER
+        primary key,
+    local TEXT not null
+);
+CREATE TABLE IF NOT EXISTS "users"
+(
+    id       INTEGER
+        primary key,
+    username TEXT                    not null
+        constraint users_pk
+            unique,
+    name     TEXT                    not null,
+    password TEXT                    not null,
+    cash     NUMERIC default 2000.00 not null
 );
