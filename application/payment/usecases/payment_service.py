@@ -8,6 +8,7 @@ from application.payment.usecases.strategy.debit_card import DebitCard
 from application.payment.usecases.strategy.wallet import Wallet
 from application.user.dtos.session_cart_item import SessionCartItem
 from application.user.interfaces.user_repository import UserRepository
+from application.user.usecases.user_cart_session import UserCartSession
 from domain.payment.card import Card
 from domain.payment.enums.card_brand import CardBrand
 from domain.payment.enums.payment_method import PaymentMethod
@@ -16,10 +17,11 @@ from domain.user import User
 
 
 class PaymentService:
-    def __init__(self, repository: CardRepository, user_repository: UserRepository, machine_service: MachineService):
+    def __init__(self, repository: CardRepository, user_repository: UserRepository, machine_service: MachineService, user_cart_session: UserCartSession):
         self._repository = repository
         self._user_repository = user_repository
         self._machine_service = machine_service
+        self._user_cart_session = user_cart_session
 
     def find_user_cards(self, user_id: int) -> list[CardDTO]:
         return [CardDTO(card) for card in self._repository.find_user_cards(user_id)]
@@ -53,7 +55,7 @@ class PaymentService:
 
         self._repository.delete(card)
 
-    def process_payment(self, user_id: int, cart: list[SessionCartItem], total: float, payment_method: PaymentMethod, card_id: int=None):
+    def process_payment(self, user_id: int, payment_method: PaymentMethod, card_id: int=None):
         user = self._user_repository.find_by_id(user_id)
         if not user:
             raise EntityNotFoundError("Usuário")
@@ -69,7 +71,9 @@ class PaymentService:
 
         strategy = strategy_creators[payment_method]()
 
-        self._purchase(strategy, cart, total)
+        self._purchase(strategy, self._user_cart_session.get_items(), self._user_cart_session.get_total_with_discounts())
+
+        self._user_cart_session.marked_ticket_as_used(user_id)
 
 
     def _purchase(self, method: PaymentMethodStrategy, cart: list[SessionCartItem], total: float):

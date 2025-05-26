@@ -4,8 +4,6 @@ from adapters.payment.dtos.new_card_dto import NewCardDTO
 from adapters.payment.dtos.payment_request_dto import PaymentRequestDTO
 from application.payment.dtos.card_dto import CardDTO
 from application.payment.usecases.payment_service import PaymentService
-from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
-
 
 class PaymentControllerAdapter:
     def __init__(self, service: PaymentService):
@@ -51,13 +49,9 @@ class PaymentControllerAdapter:
         :param request: The request containing payment details.
         :return: None
         """
-        cart_session = CartSessionAdapter.get_cart()
-
         try:
             self._service.process_payment(
                 user_id=request.user_id,
-                cart=cart_session.get_items(),
-                total=cart_session.get_total(),
                 payment_method=request.method,
                 card_id=request.card_id
             )
