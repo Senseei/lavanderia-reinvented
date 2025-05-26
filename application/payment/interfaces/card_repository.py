@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from adapters.repository import Repository
-from domain.card import Card
+from domain.payment.card import Card
 
 
 class CardRepository(Repository[Card], ABC):

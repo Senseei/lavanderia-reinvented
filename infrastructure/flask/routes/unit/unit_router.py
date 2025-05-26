@@ -24,8 +24,8 @@ class UnitRouter(BaseRouter):
 
             unit = response.data
 
-            washers = [machine for machine in unit.machines if machine.type == MachineType.LAVADORA]
-            dryers = [machine for machine in unit.machines if machine.type == MachineType.SECADORA]
+            washers = [machine for machine in unit.machines if machine.type == MachineType.LAVADORA.value]
+            dryers = [machine for machine in unit.machines if machine.type == MachineType.SECADORA.value]
 
             return render_template("unit.html", washers=washers, dryers=dryers)
 

@@ -1,8 +1,8 @@
 import datetime
 
 from domain.domain_entity import DomainEntity
-from domain.enums.card_brand import CardBrand
-from domain.enums.payment_method import PaymentMethod
+from domain.payment.enums.card_brand import CardBrand
+from domain.payment.enums.payment_method import PaymentMethod
 from domain.user import User
 
 

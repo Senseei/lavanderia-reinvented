@@ -1,4 +1,4 @@
-from domain.card import Card
+from domain.payment.card import Card
 
 
 class CardDTO:

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from domain.enums.payment_method import PaymentMethod
+from domain.payment.enums.payment_method import PaymentMethod
 
 
 class NewCardDTO:

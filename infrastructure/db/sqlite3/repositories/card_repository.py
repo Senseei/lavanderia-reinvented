@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import Optional
 
 from application.payment.interfaces.card_repository import CardRepository
-from domain.card import Card
-from domain.enums.card_brand import CardBrand
-from domain.enums.payment_method import PaymentMethod
+from domain.payment.card import Card
+from domain.payment.enums.card_brand import CardBrand
+from domain.payment.enums.payment_method import PaymentMethod
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 
