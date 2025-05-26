@@ -36,7 +36,7 @@
     <a href="{{ url_for('index.machine.find_machine_with_prices', machine_id=dryer.id) }}" class="machine-container">
         <img src="{{ url_for('static', filename='machine.png') }}" alt="Secadora">
         <div>
-            <h2>Secadora {{ dryer['id'] }}</h2>
+            <h2>Secadora {{ dryer['identifier'] }}</h2>
             <p>Suas roupas merecem um tratamento especial, afinal de contas elas te acompanham todos os dias e precisam estar sempre confortáveis.</p>
             {% if dryer["locked"] == 0 %}
                 <p id="status" style="color: green">Disponível</p>
