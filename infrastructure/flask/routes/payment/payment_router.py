@@ -8,6 +8,7 @@ from infrastructure.db.sqlite3.repositories.card_repository import CardRepositor
 from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
 from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
+from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 from infrastructure.flask.decorators.login_required import login_required
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.payment.routes_constants import PaymentRoutes
@@ -63,5 +64,5 @@ class PaymentRouter(BaseRouter):
         cycle_repository = CycleRepositoryImpl()
         machine_repository = MachineRepositoryImpl()
         machine_service = MachineService(machine_repository, cycle_repository)
-        service = PaymentService(repository, user_repository, machine_service)
+        service = PaymentService(repository, user_repository, machine_service, CartSessionAdapter.get_cart())
         self._payment_controller = PaymentControllerAdapter(service)
