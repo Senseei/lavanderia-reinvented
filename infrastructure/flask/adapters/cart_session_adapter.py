@@ -1,5 +1,6 @@
 from flask import session
 
+from application.ticket.usecases.ticket_service import TicketService
 from application.user.usecases.user_cart_session import UserCartSession
 from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
 from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
@@ -9,25 +10,23 @@ from infrastructure.db.sqlite3.repositories.ticket_repository import TicketRepos
 class CartSessionAdapter:
     @staticmethod
     def get_cart() -> UserCartSession:
-        """Recupera ou cria um novo carrinho baseado na sessão atual"""
         machine_repository = MachineRepositoryImpl()
         cycle_repository = CycleRepositoryImpl()
         ticket_repository = TicketRepositoryImpl()
+        ticket_service = TicketService(ticket_repository)
 
-        cart = UserCartSession(machine_repository, cycle_repository, ticket_repository)
+        cart = UserCartSession.get_instance(machine_repository, cycle_repository, ticket_service)
 
         if "cart_items" in session:
-            for item_data in session["cart_items"]:
-                cart.add_item(item_data["machine_id"], item_data["cycle_id"])
+            cart.sync_items(session["cart_items"])
 
         if "discounts" in session:
-            cart._discounts = session["discounts"]
+            cart.sync_discounts(session["discounts"])
 
         return cart
 
     @staticmethod
     def save_cart(cart: UserCartSession) -> None:
-        """Salva o estado do carrinho na sessão"""
         session["cart_items"] = [
             {
                 "machine_id": item.machine.id,
@@ -37,3 +36,12 @@ class CartSessionAdapter:
         ]
 
         session["discounts"] = cart.get_discounts()
+
+    @staticmethod
+    def clear_cart() -> None:
+        if "cart_items" in session:
+            session.pop("cart_items")
+        if "discounts" in session:
+            session.pop("discounts")
+
+        UserCartSession.reset_instance()
