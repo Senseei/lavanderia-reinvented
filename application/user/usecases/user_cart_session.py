@@ -5,6 +5,7 @@ from application.machine.interfaces.cycle_repository import CycleRepository
 from application.machine.interfaces.machine_repository import MachineRepository
 from application.ticket.interfaces.ticket_repository import TicketRepository
 from application.user.dtos.session_cart_item import SessionCartItem
+from application.util.currency import br
 
 
 class UserCartSession:
@@ -45,6 +46,9 @@ class UserCartSession:
             total += item.cycle.price
         return total
 
+    def get_formatted_total(self) -> str:
+        return br(self.get_total())
+
     def get_total_with_discounts(self) -> float:
         return self.get_total() - self._discounts
 
@@ -57,3 +61,7 @@ class UserCartSession:
             return False
         self._discounts = ticket.apply(self.get_total())
         return True
+
+    def clear(self):
+        self._cart.clear()
+        self._discounts = 0.0
