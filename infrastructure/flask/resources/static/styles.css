@@ -141,7 +141,9 @@ td
 }
 
 .login-form input[type="text"],
-.login-form input[type="password"] {
+.login-form input[type="password"],
+.register-form input[type="text"],
+.register-form input[type="password"] {
     width: 250px;
     height: 40px;
     font-size: 14px;
