@@ -69,3 +69,23 @@ CREATE TABLE IF NOT EXISTS "users"
     password TEXT                    not null,
     cash     NUMERIC default 2000.00 not null
 );
+
+-- INITIAL DATA
+
+-- units
+INSERT INTO "units" (id, local) VALUES (1, 'Unidade de São Paulo');
+
+-- cycles
+INSERT INTO "cycles" (id, price, time) VALUES
+   (1, 14.90, 900),
+   (2, 16.90, 1800),
+   (3, 18.90, 2700);
+
+-- machines
+INSERT INTO "machines" (type, unit_id, identifier) VALUES
+   ('Lavadora', 1, '540'),
+   ('Lavadora', 1, '541'),
+   ('Lavadora', 1, '542'),
+   ('Secadora', 1, '537'),
+   ('Secadora', 1, '538'),
+   ('Secadora', 1, '539');
