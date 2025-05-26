@@ -3,18 +3,52 @@ from application.machine.dtos.cycle_dto import CycleDTO
 from application.machine.dtos.machine_dto import MachineDTO
 from application.machine.interfaces.cycle_repository import CycleRepository
 from application.machine.interfaces.machine_repository import MachineRepository
-from application.ticket.interfaces.ticket_repository import TicketRepository
+from application.ticket.usecases.ticket_service import TicketService
 from application.user.dtos.session_cart_item import SessionCartItem
 from application.util.currency import br
 
 
 class UserCartSession:
-    def __init__(self, machine_repository: MachineRepository, cycle_repository: CycleRepository, ticket_repository: TicketRepository):
-        self._machine_repository = machine_repository
-        self._cycle_repository = cycle_repository
-        self._ticket_repository = ticket_repository
-        self._cart: list[SessionCartItem] = []
-        self._discounts: float = 0.0
+    _instance = None
+    _initialized = False
+
+    def __new__(cls, machine_repository=None, cycle_repository=None, ticket_service=None):
+        if cls._instance is None:
+            cls._instance = super(UserCartSession, cls).__new__(cls)
+        return cls._instance
+
+    def __init__(self, machine_repository: MachineRepository = None, cycle_repository: CycleRepository = None,
+                 ticket_service: TicketService = None):
+        if not UserCartSession._initialized and machine_repository and cycle_repository and ticket_service:
+            self._machine_repository = machine_repository
+            self._cycle_repository = cycle_repository
+            self._ticket_service = ticket_service
+
+            self._cart: list[SessionCartItem] = []
+            self._discounts: float = 0.0
+            self.applied_ticket = None
+            UserCartSession._initialized = True
+
+    @classmethod
+    def reset_instance(cls):
+        if cls._instance is not None:
+            cls._instance.clear()
+            cls._instance._discounts = 0.0
+            cls._instance.applied_ticket = None
+            cls._initialized = False
+            cls._instance = None
+
+    @classmethod
+    def get_instance(cls, machine_repository=None, cycle_repository=None, ticket_service=None):
+        return cls(machine_repository, cycle_repository, ticket_service)
+
+    def sync_items(self, items_data: list[dict]):
+        self._cart.clear()
+        for item_data in items_data:
+            self.add_item(item_data["machine_id"], item_data["cycle_id"])
+
+    def sync_discounts(self, discounts: float):
+        self._discounts = discounts
 
     def add_item(self, machine_id: int, cycle_id: int) -> bool:
         machine = self._machine_repository.find_by_id(machine_id)
@@ -55,12 +89,12 @@ class UserCartSession:
     def get_discounts(self) -> float:
         return self._discounts
 
-    def apply_discount(self, code: str) -> bool:
-        ticket = self._ticket_repository.find_by_code(code)
-        if not ticket:
-            return False
-        self._discounts = ticket.apply(self.get_total())
-        return True
+    def apply_discount(self, code: str, user_id: int) -> None:
+        self._discounts = self._ticket_service.apply_ticket(code, user_id, self.get_total())
+        self.applied_ticket = code
+
+    def marked_ticket_as_used(self, user_id: int) -> None:
+        self._ticket_service.mark_ticket_as_used(self.applied_ticket, user_id)
 
     def clear(self):
         self._cart.clear()
