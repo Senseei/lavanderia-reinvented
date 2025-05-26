@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from application.ticket.interfaces.ticket_repository import TicketRepository
+from application.util.dates import parse_datetime
 from domain.enums.discount_type import DiscountType
 from domain.ticket import Ticket
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
@@ -32,7 +33,7 @@ class TicketRepositoryImpl(TicketRepository, SqliteRepository):
                 type=DiscountType(row['type']),
                 discount=row['discount'],
                 code=row['code'],
-                expires_at=datetime.fromtimestamp(row['expires_at']),
+                expires_at= parse_datetime(row['expires_at'])
             )
         return None
 
@@ -46,7 +47,7 @@ class TicketRepositoryImpl(TicketRepository, SqliteRepository):
                 type=DiscountType(row['type']),
                 discount=row['discount'],
                 code=row['code'],
-                expires_at=datetime.fromtimestamp(row['expires_at']),
+                expires_at=parse_datetime(row['expires_at'])
             ) for row in rows
         ]
 
@@ -68,11 +69,22 @@ class TicketRepositoryImpl(TicketRepository, SqliteRepository):
                 type=DiscountType(row['type']),
                 discount=row['discount'],
                 code=row['code'],
-                expires_at=datetime.fromtimestamp(row['expires_at']),
+                expires_at=parse_datetime(row['expires_at'])
             )
         return None
 
     def delete_by_code(self, code: str):
         cursor = self.get_cursor()
         cursor.execute("DELETE FROM tickets WHERE code = ?", (code,))
+        self.commit()
+
+    def can_user_use_ticket(self, user_id: int, ticket_id: int) -> bool:
+        cursor = self.get_cursor()
+        cursor.execute("SELECT * FROM used_tickets WHERE ticket_id = ? and user_id = ?", (ticket_id, user_id))
+        row = cursor.fetchone()
+        return row is None
+
+    def use_ticket(self, user_id: int, ticket_id: int) -> None:
+        cursor = self.get_cursor()
+        cursor.execute("INSERT INTO used_tickets (user_id, ticket_id) VALUES (?, ?)", (user_id, ticket_id))
         self.commit()

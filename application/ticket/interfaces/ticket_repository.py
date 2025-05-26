@@ -24,3 +24,25 @@ class TicketRepository(Repository[Ticket], ABC):
         :param code: The code of the ticket to delete.
         """
         pass
+
+    @abstractmethod
+    def can_user_use_ticket(self, user_id: int, ticket_id: int) -> bool:
+        """
+        Check if a user can use a ticket.
+
+        :param ticket_id: The ID of the ticket.
+        :param user_id: The ID of the user.
+        :return: True if the user can use the ticket, False otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def use_ticket(self, user_id: int, ticket_id: int) -> None:
+        """
+        Mark a ticket as used by a user.
+
+        :param user_id: The ID of the user using the ticket.
+        :param ticket_id: The ID of the ticket to use.
+        :return: The updated Ticket object.
+        """
+        pass
