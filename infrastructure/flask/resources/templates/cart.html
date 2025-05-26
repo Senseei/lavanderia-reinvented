@@ -15,7 +15,7 @@
             <div class="product-container">
                 <img style="margin-right: 25px" src="{{ url_for('static', filename='machine.png') }}" alt="{{ product.machine.type }}">
                 <div>
-                    <h4 style="margin-bottom: 5px">{{ product.machine.type }} {{ product.machine.id }}</h4>
+                    <h4 style="margin-bottom: 5px">{{ product.machine.type }} {{ product.machine.identifier }}</h4>
                     {% if product.machine.type == "Lavadora" %}
                         <p>Serviço de Lavar</p>
                     {% else %}
