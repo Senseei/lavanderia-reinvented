@@ -22,3 +22,20 @@ class MachineRepository(Repository[Machine], ABC):
         :param unit_id: The id of the unit.
         """
         pass
+
+    @abstractmethod
+    def is_any_machine_in_list_busy(self, machines: list[int]) -> bool:
+        """
+        Check if any machine in the list is busy.
+        :param machines: A list of machine ids.
+        :return: True if any machine is busy, False otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def lock_machines(self, machines: list[int]) -> None:
+        """
+        Lock the machines with the given ids.
+        :param machines: A list of machine ids to lock.
+        """
+        pass
