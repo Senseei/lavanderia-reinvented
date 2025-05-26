@@ -97,8 +97,9 @@ class UserCartSession:
         self.applied_ticket = None
         self._discounts = 0.0
 
-    def marked_ticket_as_used(self, user_id: int) -> None:
-        self._ticket_service.mark_ticket_as_used(self.applied_ticket, user_id)
+    def marked_ticket_as_used_if_any(self, user_id: int) -> None:
+        if self.applied_ticket:
+            self._ticket_service.mark_ticket_as_used(self.applied_ticket, user_id)
 
     def clear(self):
         self._cart.clear()

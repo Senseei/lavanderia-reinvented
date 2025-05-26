@@ -73,7 +73,7 @@ class PaymentService:
 
         self._purchase(strategy, self._user_cart_session.get_items(), self._user_cart_session.get_total_with_discounts())
 
-        self._user_cart_session.marked_ticket_as_used(user_id)
+        self._user_cart_session.marked_ticket_as_used_if_any(user_id)
 
 
     def _purchase(self, method: PaymentMethodStrategy, cart: list[SessionCartItem], total: float):
