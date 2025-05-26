@@ -14,8 +14,11 @@ class Ticket(DomainEntity):
 
     def apply(self, value: float) -> float:
         if self.type == DiscountType.PERCENTAGE:
-            return value - (value * (self.discount / 100))
+            return value * (self.discount / 100)
         elif self.type == DiscountType.FLAT:
-            return value - self.discount
+            return self.discount
         else:
-            return value
+            return 0.0
+
+    def has_expired(self) -> bool:
+        return datetime.now() > self.expires_at
