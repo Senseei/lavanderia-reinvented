@@ -4,12 +4,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const radios = document.getElementById("options").querySelectorAll('input[name="payments"]');
 
-            const radios = document.getElementById("options").querySelectorAll('input');
             for (const radio of radios) {
                 radio.onclick = (e) => {
-                    const input = document.querySelector("#payment_method");
-                    input.value = e.target.id;
+                    const methodInput = document.querySelector("#payment_method");
+                    const cardIdInput = document.querySelector("#card_id");
+
+                    // Define o método de pagamento com o valor do radio button
+                    methodInput.value = e.target.value;
+
+                    // Define o ID do cartão se for um cartão, ou limpa se for carteira
+                    if (e.target.value !== "WALLET") {
+                        cardIdInput.value = e.target.dataset.cardId;
+                    } else {
+                        cardIdInput.value = "";
+                    }
                 };
             }
         });
@@ -48,18 +58,18 @@
         </div>
         <div class="container">
             <h3 class="row">Itens do pedido</h3>
-            {% for product in session["cart"] %}
+            {% for product in cart %}
                 <div class="product-container" style="font-size: 15px">
-                    <img style="margin-right: 25px" src="{{ url_for('static', filename='machine.png') }}" alt="{{ product['type'] }}">
+                    <img style="margin-right: 25px" src="{{ url_for('static', filename='machine.png') }}" alt="{{ product.machine.type }}">
                     <div style="padding-bottom: 15px">
-                        <h4 style="margin-bottom: 5px">{{ product["type"] }} {{ product["machine_id"] }}</h4>
-                        {% if product["type"] == "Lavadora" %}
+                        <h4 style="margin-bottom: 5px">{{ product.machine.type }} {{ product.machine.id }}</h4>
+                        {% if product.machine.type == "Lavadora" %}
                             <p>Serviço de Lavar</p>
                         {% else %}
                             <p>Serviço de Secar</p>
                         {% endif %}
-                        <p>Tempo de {{ (product["time"] / 60)|int }} min</p>
-                        <p>{{ product["fprice"] }}</p>
+                        <p>Tempo de {{ (product.cycle.time / 60)|int }} min</p>
+                        <p style="font-weight: bold">{{ product.cycle.get_formatted_price() }}</p>
                     </div>
                 </div>
             {% endfor %}
@@ -71,15 +81,18 @@
             </div>
             <div id="options" class="payment-method">
                 <div class="row" style="border-bottom: none">
-                    <input name="payment_method" id="payment_method" type="hidden" value="0">
-                    <input id="0" name="payments" type="radio" value="Carteira" checked>
-                    <label for="0"> Sua Carteira</label>
+                    <input name="payment_method" id="payment_method" type="hidden" value="WALLET">
+                    <input name="card_id" id="card_id" type="hidden" value="">
+                    <input id="wallet-option" name="payments" type="radio" value="WALLET" checked>
+                    <label for="wallet-option"> Sua Carteira</label>
                     <h3>- Seu saldo: {{ session["user"].get_formatted_cash() }}</h3>
                 </div>
-            {% for card in payment_info["cards"] %}
-                <input id="{{ card['id'] }}" name="payments" type="radio" value="{{ card['id'] }}">
-                <label for="{{ card['id'] }}">{{ card.brand }} - {{ card.final }} ({{ card.method }})</label>
-            {% endfor %}
+
+                {% for card in payment_info["cards"] %}
+                <input id="card-{{ card.id }}" name="payments" type="radio"
+                       value="{{ card.method }}" data-card-id="{{ card.id }}">
+                <label for="card-{{ card.id }}">{{ card.brand }} - {{ card.final }} ({{ card.method }})</label>
+                {% endfor %}
             </div>
         </div>
         <div>

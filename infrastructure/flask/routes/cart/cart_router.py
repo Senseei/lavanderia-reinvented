@@ -1,9 +1,14 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session
 
+from adapters.payment.dtos.payment_request_dto import PaymentRequestDTO
 from adapters.payment.payment_controller import PaymentControllerAdapter
+from application.machine.usecases.machine_service import MachineService
 from application.payment.usecases.payment_service import PaymentService
 from application.util.currency import br
+from domain.payment.enums.payment_method import PaymentMethod
 from infrastructure.db.sqlite3.repositories.card_repository import CardRepositoryImpl
+from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
+from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 from infrastructure.flask.decorators.login_required import login_required
@@ -54,7 +59,23 @@ class CartRouter(BaseRouter):
         def payment():
             user_cart = CartSessionAdapter.get_cart()
             if request.method == "POST":
-                pass
+                dto = PaymentRequestDTO(
+                    user_id=session["user"].id,
+                    method=PaymentMethod(request.form.get("payment_method")),
+                    cart_items= user_cart.get_items(),
+                    total=user_cart.get_total_with_discounts(),
+                    card_id=request.form.get("card_id")
+                )
+
+                response = self._payment_controller.process_payment(dto)
+                if not response.success:
+                    flash(response.message, "danger")
+                    return redirect(url_for("index.cart.payment"))
+
+                user_cart.clear()
+                CartSessionAdapter.save_cart(user_cart)
+                flash("Pagamento realizado com sucesso!", "success")
+                return redirect(url_for("index.index"))
 
             payment_info = {
                 "products": br(user_cart.get_total()),
@@ -63,11 +84,13 @@ class CartRouter(BaseRouter):
                 "cards": self._payment_controller.find_user_cards(session["user"].id).data
             }
 
-            print([card.brand for card in payment_info["cards"]])
-            return render_template("payment.html", payment_info=payment_info)
+            return render_template("payment.html", cart=user_cart.get_items(), payment_info=payment_info)
 
     def resolve_dependencies(self):
-        card_repository = CardRepositoryImpl()
+        repository = CardRepositoryImpl()
         user_repository = UserRepositoryImpl()
-        payment_service = PaymentService(card_repository, user_repository)
-        self._payment_controller = PaymentControllerAdapter(payment_service)
+        cycle_repository = CycleRepositoryImpl()
+        machine_repository = MachineRepositoryImpl()
+        machine_service = MachineService(machine_repository, cycle_repository)
+        service = PaymentService(repository, user_repository, machine_service)
+        self._payment_controller = PaymentControllerAdapter(service)

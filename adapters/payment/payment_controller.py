@@ -1,8 +1,10 @@
 from adapters.dtos.request_dto import RequestDTO
 from adapters.dtos.response_dto import ResponseDTO
 from adapters.payment.dtos.new_card_dto import NewCardDTO
+from adapters.payment.dtos.payment_request_dto import PaymentRequestDTO
 from application.payment.dtos.card_dto import CardDTO
 from application.payment.usecases.payment_service import PaymentService
+from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 
 
 class PaymentControllerAdapter:
@@ -27,7 +29,7 @@ class PaymentControllerAdapter:
         card_dto = NewCardDTO.from_dict(request.body)
         try:
             return ResponseDTO.success_response(self._service.add_card(card_dto, owner_id))
-        except ValueError as e:
+        except Exception as e:
             return ResponseDTO.error_response(str(e))
 
     def delete_card(self, card_id: str, owner_id: int) -> ResponseDTO[None]:
@@ -39,6 +41,26 @@ class PaymentControllerAdapter:
         """
         try:
             self._service.delete_card(card_id, owner_id)
+            return ResponseDTO.success_response(None)
+        except Exception as e:
+            return ResponseDTO.error_response(str(e))
+
+    def process_payment(self, request: PaymentRequestDTO) -> ResponseDTO[None]:
+        """
+        Process a payment for a user's cart.
+        :param request: The request containing payment details.
+        :return: None
+        """
+        cart_session = CartSessionAdapter.get_cart()
+
+        try:
+            self._service.process_payment(
+                user_id=request.user_id,
+                cart=cart_session.get_items(),
+                total=cart_session.get_total(),
+                payment_method=request.method,
+                card_id=request.card_id
+            )
             return ResponseDTO.success_response(None)
         except Exception as e:
             return ResponseDTO.error_response(str(e))

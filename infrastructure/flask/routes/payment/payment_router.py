@@ -2,8 +2,11 @@ from flask import Blueprint, session, render_template, request, redirect, flash,
 
 from adapters.dtos.request_dto import RequestDTO
 from adapters.payment.payment_controller import PaymentControllerAdapter
+from application.machine.usecases.machine_service import MachineService
 from application.payment.usecases.payment_service import PaymentService
 from infrastructure.db.sqlite3.repositories.card_repository import CardRepositoryImpl
+from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
+from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 from infrastructure.flask.decorators.login_required import login_required
 from infrastructure.flask.routes.base_router import BaseRouter
@@ -57,5 +60,8 @@ class PaymentRouter(BaseRouter):
     def resolve_dependencies(self):
         repository = CardRepositoryImpl()
         user_repository = UserRepositoryImpl()
-        service = PaymentService(repository, user_repository)
+        cycle_repository = CycleRepositoryImpl()
+        machine_repository = MachineRepositoryImpl()
+        machine_service = MachineService(machine_repository, cycle_repository)
+        service = PaymentService(repository, user_repository, machine_service)
         self._payment_controller = PaymentControllerAdapter(service)
