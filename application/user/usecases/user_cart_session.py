@@ -93,6 +93,10 @@ class UserCartSession:
         self._discounts = self._ticket_service.apply_ticket(code, user_id, self.get_total())
         self.applied_ticket = code
 
+    def remove_discount(self) -> None:
+        self.applied_ticket = None
+        self._discounts = 0.0
+
     def marked_ticket_as_used(self, user_id: int) -> None:
         self._ticket_service.mark_ticket_as_used(self.applied_ticket, user_id)
 

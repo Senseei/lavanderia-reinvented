@@ -24,6 +24,9 @@ class CartSessionAdapter:
             if "discounts" in session:
                 cart.sync_discounts(session["discounts"])
 
+            if "applied_ticket" in session:
+                cart.applied_ticket = session["applied_ticket"]
+
         return cart
 
     @staticmethod
@@ -38,6 +41,7 @@ class CartSessionAdapter:
             ]
 
             session["discounts"] = cart.get_discounts()
+            session["applied_ticket"] = cart.applied_ticket
 
     @staticmethod
     def clear_cart() -> None:
@@ -46,5 +50,7 @@ class CartSessionAdapter:
                 session.pop("cart_items")
             if "discounts" in session:
                 session.pop("discounts")
+            if "applied_ticket" in session:
+                session.pop("applied_ticket")
 
         UserCartSession.reset_instance()

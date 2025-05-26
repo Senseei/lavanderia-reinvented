@@ -77,7 +77,8 @@ class CartRouter(BaseRouter):
             payment_info = {
                 "products": br(user_cart.get_total()),
                 "total": br(user_cart.get_total_with_discounts()),
-                "discounts": br(user_cart.get_discounts()),
+                "discounts_as_text": br(user_cart.get_discounts()),
+                "discounts": user_cart.get_discounts(),
                 "cards": self._payment_controller.find_user_cards(session["user"].id).data
             }
 
@@ -101,6 +102,15 @@ class CartRouter(BaseRouter):
 
             CartSessionAdapter.save_cart(user_cart)
             flash("Desconto aplicado com sucesso!", "success")
+            return redirect(url_for("index.cart.payment"))
+
+        @self.blueprint.route(CartRoutes.REMOVE_DISCOUNT, methods=["POST"])
+        @login_required
+        def remove_discount():
+            user_cart = CartSessionAdapter.get_cart()
+            user_cart.remove_discount()
+            CartSessionAdapter.save_cart(user_cart)
+            flash("Desconto removido com sucesso!", "success")
             return redirect(url_for("index.cart.payment"))
 
     def resolve_dependencies(self):

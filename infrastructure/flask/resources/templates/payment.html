@@ -21,17 +21,31 @@
             }
 
             const openModalBtn = document.getElementById("open-discount-modal");
-            const modal = document.getElementById("discount-modal");
-            const closeModalBtn = document.getElementById("close-discount-modal");
+            if (openModalBtn) {
+                const modal = document.getElementById("discount-modal");
+                const closeModalBtn = document.getElementById("close-discount-modal");
 
-            openModalBtn.onclick = () => modal.style.display = "flex";
-            closeModalBtn.onclick = () => modal.style.display = "none";
+                openModalBtn.onclick = () => modal.style.display = "flex";
+                closeModalBtn.onclick = () => modal.style.display = "none";
 
-            window.onclick = function (event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            };
+                window.onclick = function (event) {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                };
+            }
+
+            const removeDiscountBtn = document.getElementById("remove-discount-btn");
+            if (removeDiscountBtn) {
+                removeDiscountBtn.addEventListener('click', function() {
+                    // Cria um formulário temporário
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ url_for('index.cart.remove_discount') }}";
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            }
         });
     </script>
     <style>
@@ -115,7 +129,7 @@
             <div class="row">
                 <p>Descontos</p>
                 <input name="discounts" type="hidden" value="0">
-                <p>{{ payment_info["discounts"] }}</p>
+                <p>{{ payment_info["discounts_as_text"] }}</p>
             </div>
             <div class="footer" style="font-weight: bold;">
                 <p>Total</p>
@@ -124,7 +138,19 @@
             </div>
             <div class="row" style="border-top: 1px solid #DDD; padding: 15px 0px">
                 <p>Cupom de desconto</p>
-                <a href="#" id="open-discount-modal">Adicionar</a>
+                {% if payment_info["discounts"]|float > 0 %}
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="color: #1E90FF;">Aplicado</span>
+                        <button
+                            id="remove-discount-btn"
+                            type="button"
+                            style="border: none; background: none; color: #1E90FF; cursor: pointer; font-size: 14px; padding: 0; font-weight: bold; text-decoration: none;">
+                            Remover
+                        </button>
+                    </div>
+                {% else %}
+                    <a href="#" id="open-discount-modal">Adicionar</a>
+                {% endif %}
             </div>
         </div>
 
@@ -176,7 +202,7 @@
         <div class="modal-content">
             <h3>Adicionar Cupom</h3>
             <form action="{{ url_for('index.cart.apply_discount') }}" method="post">
-                <input name="ticket_code" type="text" placeholder="Digite seu código de cupom">
+                <input name="ticket_code" type="text" placeholder="Digite seu código de cupom" autofocus>
                 <div class="modal-actions">
                     <input class="button button-blue-animated" type="button" id="close-discount-modal" value="Cancelar">
                     <input class="button button-blue-animated" type="submit" value="Aplicar">
