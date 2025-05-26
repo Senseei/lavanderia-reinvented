@@ -62,8 +62,6 @@ class CartRouter(BaseRouter):
                 dto = PaymentRequestDTO(
                     user_id=session["user"].id,
                     method=PaymentMethod(request.form.get("payment_method")),
-                    cart_items= user_cart.get_items(),
-                    total=user_cart.get_total_with_discounts(),
                     card_id=request.form.get("card_id")
                 )
 
@@ -72,8 +70,7 @@ class CartRouter(BaseRouter):
                     flash(response.message, "danger")
                     return redirect(url_for("index.cart.payment"))
 
-                user_cart.clear()
-                CartSessionAdapter.save_cart(user_cart)
+                CartSessionAdapter.clear_cart()
                 flash("Pagamento realizado com sucesso!", "success")
                 return redirect(url_for("index.index"))
 
@@ -86,11 +83,31 @@ class CartRouter(BaseRouter):
 
             return render_template("payment.html", cart=user_cart.get_items(), payment_info=payment_info)
 
+        @self.blueprint.route(CartRoutes.APPLY_DISCOUNT, methods=["POST"])
+        @login_required
+        def apply_discount():
+            user_cart = CartSessionAdapter.get_cart()
+            ticket_code = request.form.get("ticket_code")
+
+            if not ticket_code:
+                flash("Código de desconto inválido!", "danger")
+                return redirect(url_for("index.cart.payment"))
+
+            try:
+                user_cart.apply_discount(ticket_code, session["user"].id)
+            except Exception as e:
+                flash(str(e), "danger")
+                return redirect(url_for("index.cart.payment"))
+
+            CartSessionAdapter.save_cart(user_cart)
+            flash("Desconto aplicado com sucesso!", "success")
+            return redirect(url_for("index.cart.payment"))
+
     def resolve_dependencies(self):
         repository = CardRepositoryImpl()
         user_repository = UserRepositoryImpl()
         cycle_repository = CycleRepositoryImpl()
         machine_repository = MachineRepositoryImpl()
         machine_service = MachineService(machine_repository, cycle_repository)
-        service = PaymentService(repository, user_repository, machine_service)
+        service = PaymentService(repository, user_repository, machine_service, CartSessionAdapter.get_cart())
         self._payment_controller = PaymentControllerAdapter(service)
