@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from adapters.repository import Repository, T
+from application.repository import Repository, T
 from domain.unit import Unit
 
 

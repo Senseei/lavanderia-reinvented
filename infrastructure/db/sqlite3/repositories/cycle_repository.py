@@ -1,6 +1,6 @@
 from typing import Optional
 
-from adapters.repository import T
+from application.repository import T
 from application.machine.interfaces.cycle_repository import CycleRepository
 from domain.cycle import Cycle
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository

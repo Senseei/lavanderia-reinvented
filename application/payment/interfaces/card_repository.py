@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from adapters.repository import Repository
+from application.repository import Repository
 from domain.payment.card import Card
 
 

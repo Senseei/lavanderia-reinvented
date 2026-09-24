@@ -1,15 +1,16 @@
 from flask import Blueprint, render_template, redirect, request, flash
 
-from adapters.machine.machine_controller import MachineControllerAdapter
 from application.machine.usecases.machine_service import MachineService
 from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
 from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.machine.routes_constants import MachineRoutes
+from presentation.machine.machine_controller import MachineController
+from presentation.machine.machine_web_service import MachineWebService
 
 
 class MachineRouter(BaseRouter):
-    _machine_controller: MachineControllerAdapter
+    _machine_controller: MachineController
 
     def __init__(self):
         super().__init__(Blueprint("machine", __name__, url_prefix=MachineRoutes.BASE_URL))
@@ -29,4 +30,4 @@ class MachineRouter(BaseRouter):
         repository = MachineRepositoryImpl()
         cycle_repository = CycleRepositoryImpl()
         service = MachineService(repository, cycle_repository)
-        self._machine_controller = MachineControllerAdapter(service)
+        self._machine_controller = MachineController(MachineWebService(service))

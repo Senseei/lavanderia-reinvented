@@ -1,6 +1,6 @@
 from abc import ABC
 
-from adapters.repository import Repository
+from application.repository import Repository
 from domain.cycle import Cycle
 
 
