@@ -1,10 +1,8 @@
 from application.errors.entity_not_found_error import EntityNotFoundError
-from application.machine.dtos.cycle_dto import CycleDTO
-from application.machine.dtos.machine_details_dto import MachineDetailsDTO
-from application.machine.dtos.machine_dto import MachineDTO
 from application.machine.interfaces.cycle_repository import CycleRepository
 from application.machine.interfaces.machine_repository import MachineRepository
-from application.user.dtos.session_cart_item import SessionCartItem
+from application.user.session_cart_item import SessionCartItem
+from domain.cycle import Cycle
 from domain.machine import Machine
 
 
@@ -13,16 +11,14 @@ class MachineService:
         self._repository = repository
         self._cycle_repository = cycle_repository
 
-    def find_by_id(self, entity_id: int) -> MachineDTO:
+    def find_by_id(self, entity_id: int) -> Machine:
         machine = self._repository.find_by_id(entity_id)
         if machine is None:
-            raise EntityNotFoundError(Machine.__class__.__name__, entity_id)
-        return MachineDTO(machine)
+            raise EntityNotFoundError(Machine.__name__, entity_id)
+        return machine
 
-    def find_machine_with_prices(self, entity_id: int) -> MachineDetailsDTO:
-        machine_dto = self.find_by_id(entity_id)
-        cycles = self._cycle_repository.find_all()
-        return MachineDetailsDTO(machine=machine_dto, prices=list(map(CycleDTO, cycles)))
+    def find_all_cycles(self) -> list[Cycle]:
+        return self._cycle_repository.find_all()
 
     def lock_machines(self, machine_cycles: list[SessionCartItem]) -> None:
         self._repository.lock_machines([item.machine.id for item in machine_cycles])

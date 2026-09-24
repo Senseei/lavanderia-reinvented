@@ -1,7 +1,5 @@
 from flask import Blueprint, session, render_template, request, redirect, flash, url_for
 
-from adapters.dtos.request_dto import RequestDTO
-from adapters.payment.payment_controller import PaymentControllerAdapter
 from application.machine.usecases.machine_service import MachineService
 from application.payment.usecases.payment_service import PaymentService
 from infrastructure.db.sqlite3.repositories.card_repository import CardRepositoryImpl
@@ -12,10 +10,13 @@ from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapte
 from infrastructure.flask.decorators.login_required import login_required
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.payment.routes_constants import PaymentRoutes
+from presentation.dtos.request_dto import RequestDTO
+from presentation.payment.payment_controller import PaymentController
+from presentation.payment.payment_web_service import PaymentWebService
 
 
 class PaymentRouter(BaseRouter):
-    _payment_controller: PaymentControllerAdapter
+    _payment_controller: PaymentController
 
     def __init__(self):
         super().__init__(Blueprint("payments", __name__, url_prefix=PaymentRoutes.BASE_URL))
@@ -65,4 +66,4 @@ class PaymentRouter(BaseRouter):
         machine_repository = MachineRepositoryImpl()
         machine_service = MachineService(machine_repository, cycle_repository)
         service = PaymentService(repository, user_repository, machine_service, CartSessionAdapter.get_cart())
-        self._payment_controller = PaymentControllerAdapter(service)
+        self._payment_controller = PaymentController(PaymentWebService(service))

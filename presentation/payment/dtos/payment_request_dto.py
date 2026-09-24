@@ -1,4 +1,3 @@
-from application.user.dtos.session_cart_item import SessionCartItem
 from domain.payment.enums.payment_method import PaymentMethod
 
 

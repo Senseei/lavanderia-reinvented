@@ -1,12 +1,12 @@
-from adapters.payment.dtos.new_card_dto import NewCardDTO
+from datetime import datetime
+
 from application.errors.entity_not_found_error import EntityNotFoundError
 from application.machine.usecases.machine_service import MachineService
-from application.payment.dtos.card_dto import CardDTO
 from application.payment.interfaces.card_repository import CardRepository
 from application.payment.usecases.strategy.credit_card import CreditCard
 from application.payment.usecases.strategy.debit_card import DebitCard
 from application.payment.usecases.strategy.wallet import Wallet
-from application.user.dtos.session_cart_item import SessionCartItem
+from application.user.session_cart_item import SessionCartItem
 from application.user.interfaces.user_repository import UserRepository
 from application.user.usecases.user_cart_session import UserCartSession
 from domain.payment.card import Card
@@ -23,11 +23,11 @@ class PaymentService:
         self._machine_service = machine_service
         self._user_cart_session = user_cart_session
 
-    def find_user_cards(self, user_id: int) -> list[CardDTO]:
-        return [CardDTO(card) for card in self._repository.find_user_cards(user_id)]
+    def find_user_cards(self, user_id: int) -> list[Card]:
+        return self._repository.find_user_cards(user_id)
 
-    def add_card(self, dto: NewCardDTO, owner_id: int) -> CardDTO:
-        if not self.validate_card_number(dto.number):
+    def add_card(self, owner_id: int, titular: str, number: str, method: PaymentMethod, due_date: datetime, cvv: int) -> Card:
+        if not self.validate_card_number(number):
             raise ValueError("Invalid card number")
 
         user = self._user_repository.find_by_id(owner_id)
@@ -36,14 +36,14 @@ class PaymentService:
 
         card = Card(
             user=user,
-            brand=self.get_card_brand(dto.number),
-            titular=dto.titular,
-            number=dto.number,
-            method=dto.method,
-            due_date=dto.due_date,
-            cvv=dto.cvv
+            brand=self.get_card_brand(number),
+            titular=titular,
+            number=number,
+            method=method,
+            due_date=due_date,
+            cvv=cvv
         )
-        return CardDTO(self._repository.save(card))
+        return self._repository.save(card)
 
     def delete_card(self, card_id, owner_id):
         card = self._repository.find_by_id(card_id)

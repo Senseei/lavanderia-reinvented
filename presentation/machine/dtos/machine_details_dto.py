@@ -1,5 +1,5 @@
-from application.machine.dtos.cycle_dto import CycleDTO
-from application.machine.dtos.machine_dto import MachineDTO
+from presentation.machine.dtos.cycle_dto import CycleDTO
+from presentation.machine.dtos.machine_dto import MachineDTO
 
 
 class MachineDetailsDTO:

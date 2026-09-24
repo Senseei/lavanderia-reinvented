@@ -3,14 +3,14 @@
 {% block main %}
 
     <div class="user-info">
-        {% if not cart.get_items() %}
+        {% if not cart.items %}
             <p>Looks like your cart is empty..</p>
         {% else %}
             <p>Here is your cart :)</p>
         {% endif %}
         <a href="{{ url_for('index.index') }}">Home</a>
     </div>
-    {% for product in cart.get_items() %}
+    {% for product in cart.items %}
         <div class="container">
             <div class="product-container">
                 <img style="margin-right: 25px" src="{{ url_for('static', filename='machine.png') }}" alt="{{ product.machine.type }}">
@@ -38,7 +38,7 @@
         </div>
     {% endfor %}
 
-    {% if cart.get_items() %}
+    {% if cart.items %}
         <div class=container>
             <h3 class="row">Resumo</h3>
             <div class="row">
