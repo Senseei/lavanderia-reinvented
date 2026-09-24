@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from adapters.repository import Repository
+from application.repository import Repository
 from domain.user import User
 
 

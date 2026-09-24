@@ -1,16 +1,17 @@
 from flask import Blueprint, request, session, redirect, render_template, flash, url_for
 
-from adapters.auth.auth_controller import AuthControllerAdapter
-from adapters.dtos.request_dto import RequestDTO
 from application.auth.usecases.auth_service import AuthService
 from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 from infrastructure.flask.routes.auth.routes_constants import AuthRoutes
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.route_constants import IndexRoutes
+from presentation.auth.auth_controller import AuthController
+from presentation.auth.auth_web_service import AuthWebService
+from presentation.dtos.request_dto import RequestDTO
 
 
 class AuthRouter(BaseRouter):
-    _auth_controller: AuthControllerAdapter
+    _auth_controller: AuthController
 
     def __init__(self):
         super().__init__(Blueprint("auth", __name__, url_prefix=AuthRoutes.BASE_URL))
@@ -50,4 +51,4 @@ class AuthRouter(BaseRouter):
     def resolve_dependencies(self):
         repository = UserRepositoryImpl()
         service = AuthService(repository)
-        self._auth_controller = AuthControllerAdapter(service)
+        self._auth_controller = AuthController(AuthWebService(service))

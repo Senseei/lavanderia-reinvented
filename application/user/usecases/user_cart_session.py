@@ -1,11 +1,8 @@
 from application.errors.entity_not_found_error import EntityNotFoundError
-from application.machine.dtos.cycle_dto import CycleDTO
-from application.machine.dtos.machine_dto import MachineDTO
 from application.machine.interfaces.cycle_repository import CycleRepository
 from application.machine.interfaces.machine_repository import MachineRepository
 from application.ticket.usecases.ticket_service import TicketService
-from application.user.dtos.session_cart_item import SessionCartItem
-from application.util.currency import br
+from application.user.session_cart_item import SessionCartItem
 
 
 class UserCartSession:
@@ -57,7 +54,7 @@ class UserCartSession:
         if not machine or not cycle:
             raise EntityNotFoundError("Machine or Cycle")
 
-        cart_item = SessionCartItem(MachineDTO(machine), CycleDTO(cycle))
+        cart_item = SessionCartItem(machine, cycle)
         if cart_item not in self._cart:
             self._cart.append(cart_item)
             return True
@@ -79,9 +76,6 @@ class UserCartSession:
         for item in self._cart:
             total += item.cycle.price
         return total
-
-    def get_formatted_total(self) -> str:
-        return br(self.get_total())
 
     def get_total_with_discounts(self) -> float:
         return self.get_total() - self._discounts

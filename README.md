@@ -9,9 +9,9 @@ Este foi meu primeiro aplicativo web, feito inicialmente de maneira simples, ago
 O projeto foi refatorado para adotar a Clean Architecture, separando responsabilidades em camadas bem definidas:
 
 - **Domain**: Entidades e regras de negócio puras.
-- **Use Cases (Application)**: Casos de uso da aplicação, orquestrando as regras de negócio.
-- **Interface Adapters**: Adaptadores para entrada (controllers, views) e saída (repositórios, gateways).
-- **Frameworks & Drivers**: Frameworks externos (Flask, banco de dados, etc).
+- **Application**: Casos de uso e serviços com as regras de negócio; retornam entidades, nunca DTOs.
+- **Presentation**: Controllers, DTOs e WebServices (orquestradores que convertem entidades em DTOs). Fluxo: `Router → Controller → WebService → Service → Repository`.
+- **Infrastructure**: Frameworks externos (rotas Flask, banco SQLite, etc).
 
 ## Benefícios
 
