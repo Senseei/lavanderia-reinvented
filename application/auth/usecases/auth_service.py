@@ -16,7 +16,7 @@ class AuthService:
 
     def register(self, username: str, name: str, password: str) -> User:
         if self._user_repository.find_by_username(username):
-            raise DuplicateEntityError("A user with the given username already exists")
+            raise DuplicateEntityError("User", "A user with the given username already exists")
 
         new_user = User(username, name, password)
         return self._user_repository.save(new_user)

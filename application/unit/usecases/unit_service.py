@@ -13,5 +13,5 @@ class UnitService:
     def find_by_id(self, entity_id: int) -> Unit:
         unit = self._repository.find_by_id(entity_id)
         if unit is None:
-            raise EntityNotFoundError(Unit.__class__.__name__, entity_id)
+            raise EntityNotFoundError(Unit.__name__, entity_id)
         return unit

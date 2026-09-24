@@ -14,7 +14,7 @@ class MachineService:
     def find_by_id(self, entity_id: int) -> Machine:
         machine = self._repository.find_by_id(entity_id)
         if machine is None:
-            raise EntityNotFoundError(Machine.__class__.__name__, entity_id)
+            raise EntityNotFoundError(Machine.__name__, entity_id)
         return machine
 
     def find_all_cycles(self) -> list[Cycle]:
