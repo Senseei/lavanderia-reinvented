@@ -1,8 +1,10 @@
 from application.errors.entity_not_found_error import EntityNotFoundError
 from application.unit.interfaces.unit_repository import UnitRepository
 from domain.unit import Unit
+from di.decorators import component
 
 
+@component
 class UnitService:
     def __init__(self, repository: UnitRepository):
         self._repository = repository

@@ -4,8 +4,10 @@ from application.machine.interfaces.machine_repository import MachineRepository
 from domain.enums.machine_type import MachineType
 from domain.machine import Machine
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
+from di.decorators import component
 
 
+@component
 class MachineRepositoryImpl(MachineRepository, SqliteRepository):
     def save(self, entity: Machine) -> Machine:
         cursor = self.get_cursor()

@@ -1,26 +1,19 @@
 from flask import Blueprint, session, render_template, request, redirect, flash, url_for
 
-from application.machine.usecases.machine_service import MachineService
-from application.payment.usecases.payment_service import PaymentService
-from infrastructure.db.sqlite3.repositories.card_repository import CardRepositoryImpl
-from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
-from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
-from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
-from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 from infrastructure.flask.decorators.login_required import login_required
+from di.container import Container
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.payment.routes_constants import PaymentRoutes
 from presentation.dtos.request_dto import RequestDTO
 from presentation.payment.payment_controller import PaymentController
-from presentation.payment.payment_web_service import PaymentWebService
 
 
 class PaymentRouter(BaseRouter):
     _payment_controller: PaymentController
 
-    def __init__(self):
-        super().__init__(Blueprint("payments", __name__, url_prefix=PaymentRoutes.BASE_URL))
-        self.resolve_dependencies()
+    def __init__(self, container: Container):
+        super().__init__(Blueprint("payments", __name__, url_prefix=PaymentRoutes.BASE_URL), container)
+        self._payment_controller = container.get(PaymentController)
 
         @self.blueprint.route(PaymentRoutes.MY_CARDS, methods=["GET"])
         @login_required
@@ -57,13 +50,3 @@ class PaymentRouter(BaseRouter):
 
             flash("Card deleted successfully!", "success")
             return redirect(request.referrer)
-
-
-    def resolve_dependencies(self):
-        repository = CardRepositoryImpl()
-        user_repository = UserRepositoryImpl()
-        cycle_repository = CycleRepositoryImpl()
-        machine_repository = MachineRepositoryImpl()
-        machine_service = MachineService(machine_repository, cycle_repository)
-        service = PaymentService(repository, user_repository, machine_service, CartSessionAdapter.get_cart())
-        self._payment_controller = PaymentController(PaymentWebService(service))

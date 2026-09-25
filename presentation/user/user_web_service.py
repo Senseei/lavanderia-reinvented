@@ -1,7 +1,9 @@
 from application.user.usecases.user_service import UserService
 from presentation.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
+from di.decorators import component
 
 
+@component
 class UserWebService:
     def __init__(self, user_service: UserService):
         self._user_service = user_service

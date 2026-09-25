@@ -1,15 +1,17 @@
 from typing import Optional
 
+from application.machine.interfaces.machine_repository import MachineRepository
 from application.unit.interfaces.unit_repository import UnitRepository
 from domain.unit import Unit
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
+from di.decorators import component
 
 
+@component
 class UnitRepositoryImpl(UnitRepository, SqliteRepository):
-    def __init__(self):
+    def __init__(self, machine_repository: MachineRepository):
         super().__init__()
-        from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
-        self._machine_repository = MachineRepositoryImpl()
+        self._machine_repository = machine_repository
 
     def save(self, entity: Unit) -> Unit:
         cursor = self.get_cursor()

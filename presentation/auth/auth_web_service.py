@@ -3,8 +3,10 @@ from presentation.auth.dtos.authenticated_user_dto import AuthenticatedUserDTO
 from presentation.auth.dtos.login_credentials_dto import LoginCredentialsDTO
 from presentation.auth.dtos.new_user_dto import NewUserDTO
 from presentation.user.dtos.user_dto import UserDTO
+from di.decorators import component
 
 
+@component
 class AuthWebService:
     def __init__(self, auth_service: AuthService):
         self._auth_service = auth_service
