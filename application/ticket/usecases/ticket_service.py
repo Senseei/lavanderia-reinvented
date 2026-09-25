@@ -3,8 +3,10 @@ from application.errors.ticket_already_used_error import TicketAlreadyUsedError
 from application.errors.ticket_expired_error import TicketExpiredError
 from application.ticket.interfaces.ticket_repository import TicketRepository
 from domain.ticket import Ticket
+from di.decorators import component
 
 
+@component
 class TicketService:
     def __init__(self, repository: TicketRepository):
         self._repository = repository

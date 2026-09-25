@@ -2,8 +2,10 @@ from application.machine.usecases.machine_service import MachineService
 from presentation.machine.dtos.cycle_dto import CycleDTO
 from presentation.machine.dtos.machine_details_dto import MachineDetailsDTO
 from presentation.machine.dtos.machine_dto import MachineDTO
+from di.decorators import component
 
 
+@component
 class MachineWebService:
     def __init__(self, machine_service: MachineService):
         self._machine_service = machine_service

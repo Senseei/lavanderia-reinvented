@@ -1,10 +1,13 @@
+from application.user.usecases.user_cart_session import UserCartSession
 from presentation.dtos.request_dto import RequestDTO
 from presentation.dtos.response_dto import ResponseDTO
 from presentation.payment.dtos.card_dto import CardDTO
 from presentation.payment.dtos.new_card_dto import NewCardDTO
 from presentation.payment.dtos.payment_request_dto import PaymentRequestDTO
 from presentation.payment.payment_web_service import PaymentWebService
+from di.decorators import component
 
+@component
 class PaymentController:
     def __init__(self, web_service: PaymentWebService):
         self._web_service = web_service
@@ -47,14 +50,15 @@ class PaymentController:
         except Exception as e:
             return ResponseDTO.error_response(str(e))
 
-    def process_payment(self, request: PaymentRequestDTO) -> ResponseDTO[None]:
+    def process_payment(self, request: PaymentRequestDTO, cart: UserCartSession) -> ResponseDTO[None]:
         """
         Process a payment for a user's cart.
         :param request: The request containing payment details.
+        :param cart: The current user's cart.
         :return: None
         """
         try:
-            self._web_service.process_payment(request)
+            self._web_service.process_payment(request, cart)
             return ResponseDTO.success_response(None)
         except Exception as e:
             return ResponseDTO.error_response(str(e))

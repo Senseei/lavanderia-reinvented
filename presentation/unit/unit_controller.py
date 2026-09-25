@@ -2,7 +2,9 @@ from application.errors.entity_not_found_error import EntityNotFoundError
 from presentation.dtos.response_dto import ResponseDTO
 from presentation.unit.dtos.unit_dto import UnitDTO
 from presentation.unit.unit_web_service import UnitWebService
+from di.decorators import component
 
+@component
 class UnitController:
     def __init__(self, web_service: UnitWebService):
         self._web_service = web_service

@@ -4,8 +4,10 @@ from application.machine.interfaces.machine_repository import MachineRepository
 from application.user.session_cart_item import SessionCartItem
 from domain.cycle import Cycle
 from domain.machine import Machine
+from di.decorators import component
 
 
+@component
 class MachineService:
     def __init__(self, repository: MachineRepository, cycle_repository: CycleRepository):
         self._repository = repository

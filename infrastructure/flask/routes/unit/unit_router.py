@@ -1,20 +1,18 @@
 from flask import Blueprint, render_template, redirect, request, flash
 
-from application.unit.usecases.unit_service import UnitService
 from domain.enums.machine_type import MachineType
-from infrastructure.db.sqlite3.repositories.unit_repository import UnitRepositoryImpl
+from di.container import Container
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.unit.routes_constants import UnitRoutes
 from presentation.unit.unit_controller import UnitController
-from presentation.unit.unit_web_service import UnitWebService
 
 
 class UnitRouter(BaseRouter):
     _unit_controller: UnitController
 
-    def __init__(self):
-        super().__init__(Blueprint("unit", __name__, url_prefix=UnitRoutes.BASE_URL))
-        self.resolve_dependencies()
+    def __init__(self, container: Container):
+        super().__init__(Blueprint("unit", __name__, url_prefix=UnitRoutes.BASE_URL), container)
+        self._unit_controller = container.get(UnitController)
 
         @self.blueprint.route("/<int:unit_id>/machines", methods=["GET"])
         def find_by_id(unit_id: int):
@@ -29,8 +27,3 @@ class UnitRouter(BaseRouter):
             dryers = [machine for machine in unit.machines if machine.type == MachineType.SECADORA.value]
 
             return render_template("unit.html", washers=washers, dryers=dryers)
-
-    def resolve_dependencies(self):
-        unit_repository = UnitRepositoryImpl()
-        unit_service = UnitService(unit_repository)
-        self._unit_controller = UnitController(UnitWebService(unit_service))

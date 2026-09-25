@@ -14,14 +14,15 @@ from domain.payment.enums.card_brand import CardBrand
 from domain.payment.enums.payment_method import PaymentMethod
 from application.payment.usecases.strategy.payment_method_strategy import PaymentMethodStrategy
 from domain.user import User
+from di.decorators import component
 
 
+@component
 class PaymentService:
-    def __init__(self, repository: CardRepository, user_repository: UserRepository, machine_service: MachineService, user_cart_session: UserCartSession):
+    def __init__(self, repository: CardRepository, user_repository: UserRepository, machine_service: MachineService):
         self._repository = repository
         self._user_repository = user_repository
         self._machine_service = machine_service
-        self._user_cart_session = user_cart_session
 
     def find_user_cards(self, user_id: int) -> list[Card]:
         return self._repository.find_user_cards(user_id)
@@ -55,7 +56,7 @@ class PaymentService:
 
         self._repository.delete(card)
 
-    def process_payment(self, user_id: int, payment_method: PaymentMethod, card_id: int=None):
+    def process_payment(self, cart: UserCartSession, user_id: int, payment_method: PaymentMethod, card_id: int=None):
         user = self._user_repository.find_by_id(user_id)
         if not user:
             raise EntityNotFoundError("Usuário")
@@ -71,9 +72,9 @@ class PaymentService:
 
         strategy = strategy_creators[payment_method]()
 
-        self._purchase(strategy, self._user_cart_session.get_items(), self._user_cart_session.get_total_with_discounts())
+        self._purchase(strategy, cart.get_items(), cart.get_total_with_discounts())
 
-        self._user_cart_session.marked_ticket_as_used_if_any(user_id)
+        cart.marked_ticket_as_used_if_any(user_id)
 
 
     def _purchase(self, method: PaymentMethodStrategy, cart: list[SessionCartItem], total: float):
