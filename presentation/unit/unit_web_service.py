@@ -1,7 +1,9 @@
 from application.unit.usecases.unit_service import UnitService
 from presentation.unit.dtos.unit_dto import UnitDTO
+from di.decorators import component
 
 
+@component
 class UnitWebService:
     def __init__(self, unit_service: UnitService):
         self._unit_service = unit_service

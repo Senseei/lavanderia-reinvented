@@ -1,17 +1,12 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+
+from di.container import Container
 
 
 class BaseRouter(ABC):
-    def __init__(self, blueprint):
+    def __init__(self, blueprint, container: Container):
         self.blueprint = blueprint
-
-    @abstractmethod
-    def resolve_dependencies(self):
-        """
-        This method should be implemented in subclasses to resolve dependencies
-        and return the controller instance.
-        """
-        pass
+        self.container = container
 
     def register_routes(self, blueprints):
         for blueprint in blueprints:

@@ -3,8 +3,10 @@ from typing import Optional
 from application.user.interfaces.user_repository import UserRepository
 from domain.user import User
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
+from di.decorators import component
 
 
+@component
 class UserRepositoryImpl(UserRepository, SqliteRepository):
 
     def save(self, entity: User) -> User:

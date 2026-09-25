@@ -2,8 +2,10 @@ from application.errors.invalid_credentials_error import InvalidCredentialsError
 from application.errors.duplicate_entity_error import DuplicateEntityError
 from application.user.interfaces.user_repository import UserRepository
 from domain.user import User
+from di.decorators import component
 
 
+@component
 class AuthService:
     def __init__(self, user_repository: UserRepository):
         self._user_repository = user_repository

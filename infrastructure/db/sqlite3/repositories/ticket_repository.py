@@ -6,8 +6,10 @@ from application.util.dates import parse_datetime
 from domain.enums.discount_type import DiscountType
 from domain.ticket import Ticket
 from infrastructure.db.sqlite3.repositories.sqlite_repository import SqliteRepository
+from di.decorators import component
 
 
+@component
 class TicketRepositoryImpl(TicketRepository, SqliteRepository):
     def save(self, entity: Ticket) -> Ticket:
         cursor = self.get_cursor()

@@ -1,21 +1,21 @@
 from flask import session, has_request_context
 
+from application.machine.interfaces.cycle_repository import CycleRepository
+from application.machine.interfaces.machine_repository import MachineRepository
 from application.ticket.usecases.ticket_service import TicketService
 from application.user.usecases.user_cart_session import UserCartSession
-from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
-from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
-from infrastructure.db.sqlite3.repositories.ticket_repository import TicketRepositoryImpl
+from di.decorators import component
 
 
+@component
 class CartSessionAdapter:
-    @staticmethod
-    def get_cart() -> UserCartSession:
-        machine_repository = MachineRepositoryImpl()
-        cycle_repository = CycleRepositoryImpl()
-        ticket_repository = TicketRepositoryImpl()
-        ticket_service = TicketService(ticket_repository)
+    def __init__(self, machine_repository: MachineRepository, cycle_repository: CycleRepository, ticket_service: TicketService):
+        self._machine_repository = machine_repository
+        self._cycle_repository = cycle_repository
+        self._ticket_service = ticket_service
 
-        cart = UserCartSession.get_instance(machine_repository, cycle_repository, ticket_service)
+    def get_cart(self) -> UserCartSession:
+        cart = UserCartSession.get_instance(self._machine_repository, self._cycle_repository, self._ticket_service)
 
         if has_request_context():
             if "cart_items" in session:
@@ -29,8 +29,7 @@ class CartSessionAdapter:
 
         return cart
 
-    @staticmethod
-    def save_cart(cart: UserCartSession) -> None:
+    def save_cart(self, cart: UserCartSession) -> None:
         if has_request_context():
             session["cart_items"] = [
                 {
@@ -43,8 +42,7 @@ class CartSessionAdapter:
             session["discounts"] = cart.get_discounts()
             session["applied_ticket"] = cart.applied_ticket
 
-    @staticmethod
-    def clear_cart() -> None:
+    def clear_cart(self) -> None:
         if has_request_context():
             if "cart_items" in session:
                 session.pop("cart_items")

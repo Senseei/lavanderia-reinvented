@@ -7,8 +7,10 @@ from presentation.dtos.response_dto import ResponseDTO
 from presentation.user.dtos.user_dto import UserDTO
 from application.errors.invalid_credentials_error import InvalidCredentialsError
 from application.errors.duplicate_entity_error import DuplicateEntityError
+from di.decorators import component
 
 
+@component
 class AuthController:
     def __init__(self, web_service: AuthWebService):
         self._web_service = web_service

@@ -1,33 +1,30 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session
 
-from application.machine.usecases.machine_service import MachineService
-from application.payment.usecases.payment_service import PaymentService
 from domain.payment.enums.payment_method import PaymentMethod
-from infrastructure.db.sqlite3.repositories.card_repository import CardRepositoryImpl
-from infrastructure.db.sqlite3.repositories.cycle_repository import CycleRepositoryImpl
-from infrastructure.db.sqlite3.repositories.machine_repository import MachineRepositoryImpl
-from infrastructure.db.sqlite3.repositories.user_repository import UserRepositoryImpl
 from infrastructure.flask.adapters.cart_session_adapter import CartSessionAdapter
 from infrastructure.flask.decorators.login_required import login_required
+from di.container import Container
 from infrastructure.flask.routes.base_router import BaseRouter
 from infrastructure.flask.routes.cart.routes_constants import CartRoutes
 from presentation.cart.cart_web_service import CartWebService
 from presentation.payment.dtos.payment_request_dto import PaymentRequestDTO
 from presentation.payment.payment_controller import PaymentController
-from presentation.payment.payment_web_service import PaymentWebService
 
 
 class CartRouter(BaseRouter):
     _payment_controller: PaymentController
     _cart_web_service: CartWebService
+    _cart_session: CartSessionAdapter
 
-    def __init__(self):
-        super().__init__(Blueprint("cart", __name__, url_prefix=CartRoutes.BASE_URL))
-        self.resolve_dependencies()
+    def __init__(self, container: Container):
+        super().__init__(Blueprint("cart", __name__, url_prefix=CartRoutes.BASE_URL), container)
+        self._payment_controller = container.get(PaymentController)
+        self._cart_web_service = container.get(CartWebService)
+        self._cart_session = container.get(CartSessionAdapter)
 
         @self.blueprint.route("/", methods=["GET", "POST"])
         def cart():
-            user_cart = CartSessionAdapter.get_cart()
+            user_cart = self._cart_session.get_cart()
 
             if request.method == "POST":
                 machine_id = request.form.get("machine_id")
@@ -37,7 +34,7 @@ class CartRouter(BaseRouter):
                     flash("Este produto já está no seu carrinho!", "warning")
                     return redirect(request.referrer)
 
-                CartSessionAdapter.save_cart(user_cart)
+                self._cart_session.save_cart(user_cart)
                 flash("Produto adicionado ao carrinho!", "success")
                 return redirect(request.referrer)
 
@@ -48,10 +45,10 @@ class CartRouter(BaseRouter):
             if not request.form.get("cycle_id") and not request.form.get("machine_id"):
                 return redirect(url_for('index.cart.cart'))
 
-            user_cart = CartSessionAdapter.get_cart()
+            user_cart = self._cart_session.get_cart()
             user_cart.remove_item(int(request.form.get("machine_id")), int(request.form.get("cycle_id")))
 
-            CartSessionAdapter.save_cart(user_cart)
+            self._cart_session.save_cart(user_cart)
 
             flash("Produto removido do carrinho!", "success")
             return redirect(url_for("index.cart.cart"))
@@ -59,7 +56,7 @@ class CartRouter(BaseRouter):
         @self.blueprint.route(CartRoutes.PAYMENT, methods=["GET", "POST"])
         @login_required
         def payment():
-            user_cart = CartSessionAdapter.get_cart()
+            user_cart = self._cart_session.get_cart()
             if request.method == "POST":
                 dto = PaymentRequestDTO(
                     user_id=session["user"].id,
@@ -67,12 +64,12 @@ class CartRouter(BaseRouter):
                     card_id=request.form.get("card_id")
                 )
 
-                response = self._payment_controller.process_payment(dto)
+                response = self._payment_controller.process_payment(dto, user_cart)
                 if not response.success:
                     flash(response.message, "danger")
                     return redirect(url_for("index.cart.payment"))
 
-                CartSessionAdapter.clear_cart()
+                self._cart_session.clear_cart()
                 flash("Pagamento realizado com sucesso!", "success")
                 return redirect(url_for("index.index"))
 
@@ -90,7 +87,7 @@ class CartRouter(BaseRouter):
         @self.blueprint.route(CartRoutes.APPLY_DISCOUNT, methods=["POST"])
         @login_required
         def apply_discount():
-            user_cart = CartSessionAdapter.get_cart()
+            user_cart = self._cart_session.get_cart()
             ticket_code = request.form.get("ticket_code")
 
             if not ticket_code:
@@ -103,25 +100,15 @@ class CartRouter(BaseRouter):
                 flash(str(e), "danger")
                 return redirect(url_for("index.cart.payment"))
 
-            CartSessionAdapter.save_cart(user_cart)
+            self._cart_session.save_cart(user_cart)
             flash("Desconto aplicado com sucesso!", "success")
             return redirect(url_for("index.cart.payment"))
 
         @self.blueprint.route(CartRoutes.REMOVE_DISCOUNT, methods=["POST"])
         @login_required
         def remove_discount():
-            user_cart = CartSessionAdapter.get_cart()
+            user_cart = self._cart_session.get_cart()
             user_cart.remove_discount()
-            CartSessionAdapter.save_cart(user_cart)
+            self._cart_session.save_cart(user_cart)
             flash("Desconto removido com sucesso!", "success")
             return redirect(url_for("index.cart.payment"))
-
-    def resolve_dependencies(self):
-        repository = CardRepositoryImpl()
-        user_repository = UserRepositoryImpl()
-        cycle_repository = CycleRepositoryImpl()
-        machine_repository = MachineRepositoryImpl()
-        machine_service = MachineService(machine_repository, cycle_repository)
-        service = PaymentService(repository, user_repository, machine_service, CartSessionAdapter.get_cart())
-        self._payment_controller = PaymentController(PaymentWebService(service))
-        self._cart_web_service = CartWebService()
