@@ -52,5 +52,5 @@ class TicketService:
         :param user_id: The ID of the user using the ticket.
         """
         ticket = self.find_by_code(ticket_code)
-        self._repository.use_ticket(ticket.id, user_id)
+        self._repository.use_ticket(user_id=user_id, ticket_id=ticket.id)
 

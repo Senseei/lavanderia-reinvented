@@ -6,38 +6,20 @@ from application.user.session_cart_item import SessionCartItem
 
 
 class UserCartSession:
-    _instance = None
-    _initialized = False
+    """
+    One user's cart for the current request. The adapter rebuilds it from the HTTP session
+    on every request, so it is never shared between users or requests.
+    """
 
-    def __new__(cls, machine_repository=None, cycle_repository=None, ticket_service=None):
-        if cls._instance is None:
-            cls._instance = super(UserCartSession, cls).__new__(cls)
-        return cls._instance
+    def __init__(self, machine_repository: MachineRepository, cycle_repository: CycleRepository,
+                 ticket_service: TicketService):
+        self._machine_repository = machine_repository
+        self._cycle_repository = cycle_repository
+        self._ticket_service = ticket_service
 
-    def __init__(self, machine_repository: MachineRepository = None, cycle_repository: CycleRepository = None,
-                 ticket_service: TicketService = None):
-        if not UserCartSession._initialized and machine_repository and cycle_repository and ticket_service:
-            self._machine_repository = machine_repository
-            self._cycle_repository = cycle_repository
-            self._ticket_service = ticket_service
-
-            self._cart: list[SessionCartItem] = []
-            self._discounts: float = 0.0
-            self.applied_ticket = None
-            UserCartSession._initialized = True
-
-    @classmethod
-    def reset_instance(cls):
-        if cls._instance is not None:
-            cls._instance.clear()
-            cls._instance._discounts = 0.0
-            cls._instance.applied_ticket = None
-            cls._initialized = False
-            cls._instance = None
-
-    @classmethod
-    def get_instance(cls, machine_repository=None, cycle_repository=None, ticket_service=None):
-        return cls(machine_repository, cycle_repository, ticket_service)
+        self._cart: list[SessionCartItem] = []
+        self._discounts: float = 0.0
+        self.applied_ticket = None
 
     def sync_items(self, items_data: list[dict]):
         self._cart.clear()
